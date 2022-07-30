@@ -41,11 +41,63 @@ bpy.ops.mesh.primitive_ico_sphere_add
 	radius=1, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), scale=(0, 0, 0)
 
 ----------------------------------------------------------------
+Объекты
 
 Создание нового объекта (объект не может быть создан конструктором напрямую)
 
 	bpy.data.meshes.new(name="MyMesh")
-	bpy.data.materials.new("MyMaterial")
+	# bpy.data.materials.new("MyMaterial") - вот это несоздаёт node_tree в материале
+	# bpy.ops.material.new()
+	mat = bpy.data.materials.new(name=matName)
+	mat.use_nodes = True
+	
+	bpy.data.objects[name].material_slots[0].material = mat
 
+https://stackoverflow.com/questions/36185377/how-i-can-create-a-material-select-it-create-new-nodes-with-this-material-and#36194568
+	To add a new node you use node_tree.nodes.new('type') where the list of available node types can be found on this page. 
+	
+	https://programtalk.com/python-examples/bpy.data.materials/
+	https://programtalk.com/vs4/python/11191/phobos/src/materials.py/
+
+	# bpy.data.meshes.remove(mesh)
+
+# https://docs.blender.org/api/current/info_quickstart.html?highlight=poll
+Сохранение в объекте своего свойства
+	bpy.context.object["MyOwnProperty"] = 42
+
+	if "SomeProp" in bpy.context.object:
+    	print("Property found")
+
+	value = bpy.data.scenes["Scene"].get("test_prop", "fallback value")
+	
+Создание коллекции настроек
+	collection = bpy.data.collections.new("MyTestCollection")
+	collection["MySettings"] = {"foo": 10, "bar": "spam", "baz": {}}
+
+	del collection["MySettings"]
+
+Работа с коллекциями объектов в сцене
+https://docs.blender.org/api/current/bpy.ops.collection.html?highlight=collection
+
+	При создании коллекции необходимо сначала убрать выделение, чтобы выделенные объекты не добавились в коллекцию по ошибке
+	bpy.ops.object.select_all(action='DESELECT')
+
+	https://docs.blender.org/api/current/bpy.ops.object.html?highlight=collection#bpy.ops.object.collection_link
+
+	bpy.ops.object.collection_instance_add - добавляет коллекцию в список объектов в сцене
+	bpy.ops.object.collection_link - добавляет объект в коллекцию
+	bpy.ops.object.collection_remove() - удаляет объект из текущей коллекции
+	bpy.ops.object.collection_unlink() - удаляет ссылку на объект
+
+	
+Переопределение контекста
+	https://docs.blender.org/api/current/bpy.ops.html?highlight=context%20object#overriding-context
+
+	override = bpy.context.copy()
+	override["selected_objects"] = list(context.scene.objects)
+	# override["active_object"] = mat
+	override["active_object"] = obj
+	with bpy.context.temp_override(**override):
+		bpy.ops.cycles.use_shading_nodes()
 
 
