@@ -1,3 +1,4 @@
+# Использование иллюстрации только с согласования с автором иллюстрации
 # Автор илллюстрации https://author.today/u/alrtat
 # Рисуем иллюстрацию к https://author.today/reader/166459/1360972
 
@@ -5,6 +6,8 @@ import bpy
 from math import *
 from mathutils import *
 from random import *
+
+# Удаляем всё, что осталось от предыдущих запусков скриптов или других рисований
 
 # Удаляем все mesh
 for i in bpy.data.meshes:
@@ -29,6 +32,7 @@ torMat = []
 
 def addMaterial(BaseColor = None, Specular = 0, Roughness = 0):
 
+	# bpy.data.materials.new("MyMaterial")
 	bpy.ops.material.new()
 	mat = bpy.data.materials[len(bpy.data.materials)-1]
 
@@ -46,7 +50,7 @@ def addMaterial(BaseColor = None, Specular = 0, Roughness = 0):
 
 
 # Функция добавления планеты (сферы)
-def addPlanet(name, distance, radius, rotateInDegree, loc0, BaseColor, minor_radius=0.25, subdivisions=4):
+def addPlanet(name, distance, radius, rotateInDegree, loc0, BaseColor, minor_radius=0.25, subdivisions=4, Smooth = True):
 	
 	rotateInDegree += 90
 
@@ -60,8 +64,8 @@ def addPlanet(name, distance, radius, rotateInDegree, loc0, BaseColor, minor_rad
 	# Похоже, что последний объект добавляется здесь в нулевой индекс
 	bpy.data.objects[0].name = name
 	# bpy.data.meshes[len(bpy.data.meshes)-1].name = name
-	# bpy.ops.object.shade_smooth()
-	# bpy.ops.object.shade_flat(True)
+	if Smooth:
+		bpy.ops.object.shade_smooth()
 
 	bpy.ops.object.material_slot_add()
 
@@ -144,7 +148,6 @@ addPlanet('Калидум',  40,  2,  -100,  loc0, BaseColor = (1, 0.5, 0), mino
 
 # Калидум + Клара
 ml = bpy.data.objects['Калидум'].location
-# addPlanet('Клара',  5, 1, +100, (ml[0], ml[1]), BaseColor = (0.7, 0.5, 0))
 addPlanet('Клара',  5, 1, -70, (ml[0], ml[1]), BaseColor = (0.7, 0.5, 0), minor_radius = 0.01)
 
 # Мора + Примис + Дейнде
@@ -154,14 +157,8 @@ addPlanet('Примис',  7.8, 1, -158,  mk, BaseColor = (0.25, 0.25, 1), minor
 addPlanet('Дейнде',  11,  2,  -77,  mk, BaseColor = (1, 0.25, 0.75), minor_radius = 0.01)
 
 scale = 5
-for i in range(186*3):
-	addPlanet('Пояс', uniform(5, 6),  uniform(0.04*scale, 0.01*scale),  uniform(0, 360),  mk, BaseColor = (1-uniform(0, 0.1), 0.25+uniform(-0.05, 0.05), 0.75+uniform(-0.05, 0.05)), minor_radius = 0, subdivisions = 1 + (i&1))
-
-#	mr = 0.12
-#	bpy.ops.mesh.primitive_torus_add(location=(mk[0], mk[1], 0), major_radius=5+i*(mr+0.01), minor_radius=mr, major_segments=64, minor_segments=8)
-#	bpy.ops.object.material_slot_add()
-#	mat = addMaterial(BaseColor = (0.3, 0.17, 1), Specular = 0.25, Roughness = 1)
-#	bpy.data.objects[0].material_slots[0].material = mat
+for i in range(186*2):
+	addPlanet('Пояс', uniform(5, 6.5),  uniform(0.04*scale, 0.01*scale),  uniform(0, 360),  mk, BaseColor = (1-uniform(0, 0.1), 0.25+uniform(-0.05, 0.05), 0.75+uniform(-0.05, 0.05)), minor_radius = 0, subdivisions = 1 + (i&1), Smooth = False)
 
 
 # Реквием + Сомниум
@@ -188,7 +185,7 @@ bpy.data.scenes[0].render.engine = 'CYCLES'
 bpy.data.scenes[0].cycles.samples = 64
 # bpy.data.scenes[0].cycles.seed = 0
 bpy.data.scenes[0].cycles.denoising_prefilter = 'FAST'
-bpy.data.scenes[0].cycles.volume_step_rate = 0.1
+bpy.data.scenes[0].cycles.volume_step_rate = 0.01
 # bpy.ops.render.view_show()
 # bpy.ops.render.render()
 
