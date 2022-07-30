@@ -1,0 +1,39 @@
+https://www.blender.org/
+https://docs.blender.org/
+https://docs.blender.org/api/current/info_quickstart.html
+
+
+Создать новую сцену
+	bpy.ops.scene.new()
+		в качестве параметра можно передать тип сцены
+
+Для сцены
+	bpy.data.scenes["Scene"].unit_settings.system_rotation
+		единицы измерения для углов
+			= 'DEGREES'
+			= 'RADIANS'
+	bpy.data.scenes["Scene"].use_gravity
+		Использовать ли гравитацию (см. в настройках сцены)
+
+	for obj in bpy.context.scene.objects:
+		Проходит по всем объектам сцены
+	Удалить все объекты
+		bpy.ops.object.select_all()
+		bpy.ops.object.delete()
+
+Создать ICO-сферу (она однородно заполнена треугольниками)
+bpy.ops.mesh.primitive_ico_sphere_add
+	subdivisions=2,
+		Количество рекурсий. 1 означает, что это 20 граней (икосаэдр)
+			2 означает, что каждый треугольник разбит ещё на 4 треугольника
+			Наблюдения:
+				4 - это более-менее плавная сфера, если смотреть издалека
+				7 - полностью непрерывная сфера, если она занимает весь экран (полигоны не заметны)
+	bpy.ops.object.shade_smooth() после того, как сфера создана позволит ей выглядеть более гладко (с точки зрения теней), однако контуры объекта всё равно видны негладкими
+	bpy.ops.object.shade_flat() Объект будет выглядеть гладким (похоже, не работает со сферами)
+	bpy.data.objects['Icosphere'].location[0] положение сферы по оси x
+
+
+	radius=1, calc_uvs=True, enter_editmode=False, align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), scale=(0, 0, 0)
+
+
