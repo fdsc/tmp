@@ -269,6 +269,7 @@ Carbage = 'Кольцо обломков'
 bpy.ops.object.select_all(action='DESELECT')
 bpy.ops.collection.create(name=Carbage)
 bpy.ops.object.collection_instance_add(name=Carbage)
+# view_layer.active_layer_collection.collection.objects.link(object)
 
 scale = 5
 for i in range(CountOfCarbage):

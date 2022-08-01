@@ -2,6 +2,31 @@ https://www.blender.org/
 https://docs.blender.org/
 https://docs.blender.org/api/current/info_quickstart.html
 
+Включить в preferences => interface => Developer Extras и Python tooltips
+
+Чтобы отображать все операторы, включая прокрутку мыши, выполнить команду
+	bpy.app.debug_wm = True
+
+Запуск файла
+filename = "/full/path/to/myscript.py"
+exec(compile(open(filename).read(), filename, 'exec'))
+
+Загрузка в path
+import sys
+import os
+import bpy
+
+blend_dir = os.path.dirname(bpy.data.filepath)
+if blend_dir not in sys.path:
+   sys.path.append(blend_dir)
+
+
+Хороший сайт с примерами
+https://programtalk.com/python-examples/bpy.data.meshes.new/
+
+
+Выбрать объект
+bpy.data.objects['Cube'].select_set(True)
 
 ----------------------------------------------------------------
 
@@ -43,7 +68,31 @@ bpy.ops.mesh.primitive_ico_sphere_add
 ----------------------------------------------------------------
 Объекты
 
-Создание нового объекта (объект не может быть создан конструктором напрямую)
+https://docs.blender.org/api/current/bpy.types.Object.html?highlight=object%20scene
+Создание объекта mesh
+import bpy
+
+view_layer = bpy.context.view_layer
+
+# Create new light datablock.
+light_data = bpy.data.lights.new(name="New Light", type='POINT')
+
+# Create new object with our light datablock.
+light_object = bpy.data.objects.new(name="New Light", object_data=light_data)
+
+# Link light object to the active collection of current view layer,
+# so that it'll appear in the current scene.
+view_layer.active_layer_collection.collection.objects.link(light_object)
+
+# Place light to a specified location.
+light_object.location = (5.0, 5.0, 5.0)
+
+# And finally select it and make it active.
+light_object.select_set(True)
+view_layer.objects.active = light_object
+
+
+Создание нового объекта материала (объект не может быть создан конструктором напрямую)
 
 	bpy.data.meshes.new(name="MyMesh")
 	# bpy.data.materials.new("MyMaterial") - вот это несоздаёт node_tree в материале
@@ -71,7 +120,16 @@ https://stackoverflow.com/questions/36185377/how-i-can-create-a-material-select-
 	value = bpy.data.scenes["Scene"].get("test_prop", "fallback value")
 	
 Создание коллекции настроек
-	collection = bpy.data.collections.new("MyTestCollection")
+	# collection = bpy.data.collections.new("MyTestCollection")
+	bpy.data.collections.new("MyTestCollection")
+
+	Carbage = 'Ремни'
+	# Перед созданием коллекции убираем выделение с объектов, чтобы они не добавились по ошибке
+	bpy.ops.object.select_all(action='DESELECT')
+	CarbageCollection = bpy.data.collections.new(Carbage)
+	bpy.context.scene.collection.children.link(CarbageCollection)
+	
+
 	collection["MySettings"] = {"foo": 10, "bar": "spam", "baz": {}}
 
 	del collection["MySettings"]
@@ -100,4 +158,36 @@ https://docs.blender.org/api/current/bpy.ops.collection.html?highlight=collectio
 	with bpy.context.temp_override(**override):
 		bpy.ops.cycles.use_shading_nodes()
 
+
+----------------------------------------------------------------
+Анимация
+
+https://docs.blender.org/api/current/info_quickstart.html?highlight=animation
+
+obj = bpy.context.object
+obj.location[2] = 0.0
+obj.keyframe_insert(data_path="location", frame=10.0, index=2)
+obj.location[2] = 1.0
+obj.keyframe_insert(data_path="location", frame=20.0, index=2)
+
+или
+
+obj = bpy.context.object
+obj.animation_data_create()
+obj.animation_data.action = bpy.data.actions.new(name="MyAction")
+fcu_z = obj.animation_data.action.fcurves.new(data_path="location", index=2)
+fcu_z.keyframe_points.add(2)
+fcu_z.keyframe_points[0].co = 10.0, 0.0
+fcu_z.keyframe_points[1].co = 20.0, 1.0
+
+
+
+----------------------------------------------------------------
+Арматура
+
+numpad . (del) приближает объект максимально
+
+
+Примеры анимации ротации объектов
+https://docs.blender.org/manual/en/latest/animation/drivers/workflow_examples.html
 
