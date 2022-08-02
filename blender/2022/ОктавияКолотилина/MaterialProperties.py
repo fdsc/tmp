@@ -29,7 +29,7 @@ class MaterialProperties:
 		return a
 
 
-	def addMaterial(this, BaseColor = None, Specular = 0, Roughness = 0, obj = None, name=None):
+	def addMaterial(this, BaseColor = None, Specular = 0, Roughness = 0, Metallic = 1, obj = None, name=None):
 
 		if name:
 			matName = this.prefix + name
@@ -51,8 +51,9 @@ class MaterialProperties:
 			inp['Base Color'].default_value[2] = BaseColor[2]
 			inp['Base Color'].default_value[3] = 255 # Альфа-канал
 
-		inp['Specular'] .default_value = Specular
-		inp['Roughness'].default_value = Roughness
+		inp['Specular'] .default_value  = Specular
+		inp['Roughness'].default_value  = Roughness
+		inp['Metallic']  .default_value = Metallic
 		
 		if obj:
 			view_layer = bpy.context.view_layer

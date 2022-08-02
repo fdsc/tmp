@@ -38,6 +38,14 @@ MatProps = MaterialProperties.MaterialProperties()
 MatProps.DeleteAllObjects()
 
 
+class GlobalProperties:
+	ВысотаМодуля = 3.5
+	ШиринаМодуля = 3.0
+	ТолщинаСтенокМодуля   = 0.35
+	ПоложениеТочкиЗахвата = 8
+
+GP = GlobalProperties()
+
 # Создаём плоскость, параллельную плоскости XY
 def newVert():
 	
@@ -71,9 +79,9 @@ def newVert():
 
 		return hs, vs
 
-	H = 3.5		# Высота модуля
-	W = 3.0		# Ширина модуля
-	S = 0.35	# Толщина стенок модуля
+	H = GP.ВысотаМодуля
+	W = GP.ШиринаМодуля
+	S = GP.ТолщинаСтенокМодуля
 	
 	[hs, vs] = getHV(H, W, 0.0)
 	addVerts(hs, 0, vs, 0, k)
@@ -121,6 +129,7 @@ def СоздатьКоридор():
 	bpy.ops.object.mode_set(mode='OBJECT')
 	
 	МатериалКоридора = MatProps.addMaterial(BaseColor=(0.5, 0.5, 0.5), Roughness=1, name="МатериалКоридора",  obj=object)
+
 	
 	return object, mesh, vertices, edjes, faces
 
@@ -253,6 +262,36 @@ def СоздатьДвери(Коридор):
 
 	МатериалУплотнения = MatProps.addMaterial(BaseColor=(0, 0, 0), Roughness=1, name="МатериалУплотнения",  obj=object)
 
+	
+def ДобавитьТочкуЗахвата():
+	
+	view_layer = bpy.context.view_layer
+	
+	R = 0.7		# Радиус цилиндра
+	H = 0.4		# Высота цилиндра над уровнем коридора
+	ВысотаЦилиндра = H + GP.ТолщинаСтенокМодуля
+	# Точка захвата расположена на крыше по центру модуля
+	position = (GP.ШиринаМодуля/2, GP.ПоложениеТочкиЗахвата, GP.ВысотаМодуля + H/2)
+
+	bpy.ops.mesh.primitive_cylinder_add(vertices=128, radius=R, depth=H, enter_editmode=False, align='WORLD', location=position)
+
+	cyl = view_layer.objects.active
+	
+	МатериалУплотнения = MatProps.addMaterial(BaseColor=(0.1, 0.1, 0.1), Roughness=0.5, Specular=1, name="МатериалТочкиЗахвата",  obj=cyl)
+	
+	МатериалУплотнения.node_tree.nodes.remove(МатериалУплотнения.node_tree.nodes['Principled BSDF'])
+	matOutput = МатериалУплотнения.node_tree.nodes['Material Output']
+	
+	texImage_node = МатериалУплотнения.node_tree.nodes.new('ShaderNodeTexChecker')
+
+    МатериалУплотнения.node_tree.links.new(texImage_node.outputs[0], matOutput.inputs[0])
+	
+	# bpy.data.materials['PlanetMaterial.МатериалТочкиЗахвата'].node_tree.nodes['Checker Texture']
+	inp = МатериалУплотнения.node_tree.nodes['Checker Texture'].inputs
+	inp['Color1'].default_value = (1, 1, 1, 1)
+	inp['Color2'].default_value = (0, 0, 0, 1)
+	inp['Scale'] .default_value = 3
+
 
 # -------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------
@@ -299,7 +338,7 @@ SunL.color = (1, 1, 0.98)
 # Создаём основные объекты сцены
 Коридор = СоздатьКоридор()
 СоздатьДвери(Коридор)
-
+ДобавитьТочкуЗахвата()
 
 
 # -------------------------------------------------------------------------------------
@@ -307,10 +346,12 @@ SunL.color = (1, 1, 0.98)
 
 # Устанавливаем, что на объектах нет текстуры
 for obj in bpy.data.objects:
-	obj.display_type = 'SOLID' # TEXTURED
+	# obj.display_type = 'SOLID' # TEXTURED
+	obj.display_type = 'TEXTURED'
 
 # Добавляем настройки рендера
 bpy.data.scenes[0].render.engine = 'CYCLES'
+bpy.data.scenes[0].cycles.preview_samples = 16
 bpy.data.scenes[0].cycles.samples = Samples
 # bpy.data.scenes[0].cycles.seed = 0
 bpy.data.scenes[0].cycles.denoising_prefilter = Prefilter
