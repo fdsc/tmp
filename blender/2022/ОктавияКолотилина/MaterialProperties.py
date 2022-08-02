@@ -32,9 +32,9 @@ class MaterialProperties:
 	def addMaterial(this, BaseColor = None, Specular = 0, Roughness = 0, obj = None, name=None):
 
 		if name:
-			matName = prefix + name
+			matName = this.prefix + name
 		else:
-			matName = prefix + str(Props.getMaterialNumber)
+			matName = this.prefix + str(Props.getMaterialNumber)
 
 		# bpy.data.materials.new(matName)
 		#bpy.ops.material.new()
@@ -53,6 +53,15 @@ class MaterialProperties:
 
 		inp['Specular'] .default_value = Specular
 		inp['Roughness'].default_value = Roughness
+		
+		if obj:
+			view_layer = bpy.context.view_layer
+			view_layer.objects.active = obj
+
+			if len(obj.material_slots) <= 0:
+				bpy.ops.object.material_slot_add()
+
+			obj.material_slots[0].material = mat
 
 		return mat
 

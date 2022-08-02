@@ -13,16 +13,14 @@ from random import *
 
 Samples   = 1024
 Prefilter = 'ACCURATE'
-CountOfCarbage = 186*2
 use_denoising = True
 
 SimpleRendering = True
 
 if SimpleRendering:
-	Samples   = 64
+	Samples   = 6
 	Prefilter = 'FAST'
 	# Prefilter = 'NONE'
-	CountOfCarbage = 64
 	use_denoising  = False
 
 
@@ -38,49 +36,6 @@ MatProps = MaterialProperties.MaterialProperties()
 
 
 MatProps.DeleteAllObjects()
-
-
-def addTorus(name, loc0, R, minor_radius, major_segments=0, minor_segments=12):
-	
-	if major_segments <= 0:
-		major_segments = int(R/minor_radius)
-
-	if major_segments < int(R):
-		major_segments = int(R)
-
-	if major_segments < 16:
-		major_segments = 16
-
-	bpy.ops.mesh.primitive_torus_add(
-		location       = (loc0[0], loc0[1], 0),
-		major_radius   = R,
-		minor_radius   = minor_radius,
-		major_segments = major_segments,
-		minor_segments = minor_segments
-	)
-
-	nm = name + ".torus." + str(len(bpy.data.objects))
-	# bpy.data.objects[0].name = nm
-	bpy.context.active_object.name = nm
-	
-	print("!!!" + bpy.context.active_object.name)
-
-	return bpy.context.active_object
-
-
-#Carbage = 'Ремни'
-# Перед созданием коллекции убираем выделение с объектов, чтобы они не добавились по ошибке
-#bpy.ops.object.select_all(action='DESELECT')
-#CarbageCollection = bpy.data.collections.new(Carbage)
-#bpy.context.scene.collection.children.link(CarbageCollection)
-
-#view_layer        = bpy.context.view_layer
-#CarbageCollection = bpy.data.collections[0]
-# bpy.data.scenes[0].collection.children.link(CarbageCollection)
-# view_layer.active_layer_collection.collection.objects.link(CarbageCollection)
-
-# with bpy.context.temp_override(**override2):
-#	bpy.ops.object.collection_remove()
 
 
 # Создаём плоскость, параллельную плоскости XY
@@ -116,9 +71,9 @@ def newVert():
 
 		return hs, vs
 
-	H = 3.5
-	W = 3.0
-	S = 0.5
+	H = 3.5		# Высота модуля
+	W = 3.0		# Ширина модуля
+	S = 0.35	# Толщина стенок модуля
 	
 	[hs, vs] = getHV(H, W, 0.0)
 	addVerts(hs, 0, vs, 0, k)
@@ -165,10 +120,17 @@ def СоздатьКоридор():
 	
 	bpy.ops.object.mode_set(mode='OBJECT')
 	
+	МатериалКоридора = MatProps.addMaterial(BaseColor=(0.5, 0.5, 0.5), Roughness=1, name="МатериалКоридора",  obj=object)
+	
 	return object, mesh, vertices, edjes, faces
 
 def СоздатьДвери(Коридор):
 	[_, _, vert, _, _] = Коридор
+	
+	Уплотнение   = 0.025
+	Зазор        = 0.001
+	Смещение     = 0.01
+	ТолщинаДвери = 0.002 # Это получается чуть ли не 40 см, не понял
 	
 	# Правая дверь
 	v  = vert[8:]
@@ -176,28 +138,41 @@ def СоздатьДвери(Коридор):
 	dx = (v[5][0] - v[4][0]) * 0.1
 	x -= dx
 	z  = v[4][2]
-	v.append((x, 0, z))
+	v.append((x+Уплотнение, 0, z))
 
 	z  = v[3][2]
-	v.append((x, 0, z + dx))
+	v.append((x+Уплотнение, 0, z))
+
+	# Делаем зазор между дверью и корпусом
+	vi   = v[1]
+	v[1] = (vi[0], vi[1], vi[2]+Зазор)
+
+	vi   = v[7]
+	v[7] = (vi[0], vi[1], vi[2]-Зазор)
 	
-	#for i in range(len(v)):
-	#	v[i] = (v[i][0], v[i][1]+0.025, v[i][2])
+	for i in [3, 5]:
+		vi   = v[i]
+		v[i] = (vi[0]-Зазор, vi[1], vi[2])
+
 
 	f = [(1, 3, 5, 7, 8, 9)]
 
 	name = 'ДверьПравая'
 	[object, mesh] = MatProps.createObject(
-		name=name, vertices=v, faces=f, edjes=[], loc0=(0, 0, 0)
+		name=name, vertices=v, faces=f, edjes=[], loc0=(0, +Смещение, 0)
 		)
 
+	vr = v
 
 	bpy.ops.object.editmode_toggle()
 
-	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -0.2), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
+	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -ТолщинаДвери), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
 	
 	bpy.ops.object.mode_set(mode='OBJECT')
 	
+	МатериалДверей = MatProps.addMaterial(BaseColor=(0.5, 0.5, 0.5), Roughness=1, name="МатериалДверей",  obj=object)
+
+
 	
 	# Левая дверь
 	v  = vert[8:]
@@ -208,23 +183,143 @@ def СоздатьДвери(Коридор):
 	v.append((x, 0, z))
 
 	z  = v[3][2]
-	v.append((x, 0, z + dx))
+	v.append((x, 0, z))
+		
+	v[1] = (v[1][0]-Уплотнение, v[1][1], v[1][2])
+	v[7] = (v[7][0]-Уплотнение, v[7][1], v[7][2])
+	
+	# Делаем зазор между дверью и корпусом
+	vi   = v[0]
+	v[0] = (vi[0], vi[1], vi[2]+Зазор)
+	vi   = v[1]
+	v[1] = (vi[0], vi[1], vi[2]+Зазор)
+
+	vi   = v[6]
+	v[6] = (vi[0], vi[1], vi[2]-Зазор)
+	vi   = v[7]
+	v[7] = (vi[0], vi[1], vi[2]-Зазор)
+	
+	vi   = v[2]
+	v[2] = (vi[0]+Зазор, vi[1], vi[2])
+	vi   = v[4]
+	v[4] = (vi[0]+Зазор, vi[1], vi[2])
+
 	
 	f = [(0, 1, 9, 8, 7, 6, 4, 2)]
 
 	name = 'ДверьЛевая'
 	[object, mesh] = MatProps.createObject(
-		name=name, vertices=v, faces=f, edjes=[], loc0=(0, 0, 0)
+		name=name, vertices=v, faces=f, edjes=[], loc0=(0, +Смещение, 0)
 		)
 
+	vl = v
+	
+	bpy.ops.object.editmode_toggle()
+
+	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -ТолщинаДвери), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
+	
+	bpy.ops.object.mode_set(mode='OBJECT')
+
+	bpy.ops.object.material_slot_add()
+	object.material_slots[0].material = МатериалДверей
+	
+	
+	# Уплотнение между дверями
+	v = []
+	v.append(vr[1]) # 0 Правые точки уплотнения: низ
+	v.append(vr[7]) # 1 Правые точки уплотнения: верх
+	v.append(vr[8]) # 2 Правые точки центра: верх
+	v.append(vr[9]) # 3 Правые точки центра: низ
+
+	v.append(vl[1])	# 4 Левая точка снизу
+	v.append(vl[7])	# 5 Левая точки сверху
+	v.append(vl[8])	# 6 Левая тоцка центр: верх
+	v.append(vl[9])	# 7 Левая тоцка центр: низ
+
+
+	# f = [(4, 0, 3, 7), (3, 7, 6, 3), (3, 6, 5, 1)]
+	f = [(4, 0, 3, 7), (3, 7, 6, 2), (6, 2, 1, 5)]
+	
+	name = 'УплотнениеМеждуДверями'
+	[object, mesh] = MatProps.createObject(
+		name=name, vertices=v, faces=f, edjes=[], loc0=(0, +Смещение, 0)
+		)
+	
 	bpy.ops.object.editmode_toggle()
 
 	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -0.2), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
 	
 	bpy.ops.object.mode_set(mode='OBJECT')
 
+	МатериалУплотнения = MatProps.addMaterial(BaseColor=(0, 0, 0), Roughness=1, name="МатериалУплотнения",  obj=object)
 
+
+# -------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
+
+view_layer = bpy.context.view_layer
+
+# Добавляем камеру
+bpy.ops.object.camera_add()
+bpy.data.objects['Camera'].location = Vector((+6.0, -10, 6.5))
+bpy.data.objects['Camera'].rotation_euler = Euler((70*pi/180,   0*pi/180, +18*pi/180), 'XYZ')
+bpy.data.cameras[0].lens     = 37  # Фокусное расстояние объектива
+bpy.data.cameras[0].clip_end = 40  # Дальность отрисовки
+
+# Добавляем освещение
+
+# Свет от Моры
+bpy.ops.object.light_add(type='SUN', location=(-10, -10, -10), rotation=(180*pi/180, 30*pi/180, 15*pi/180))
+MoraObj = view_layer.objects.active
+MoraL   = bpy.data.lights[len(bpy.data.lights)-1]
+MoraObj.name = 'Свет Моры'
+MoraL.energy = 1
+# MoraL.angle  = 0.5*pi/180
+MoraL.angle  = 90*pi/180
+MoraL.cycles.max_bounces = 5
+
+# Устанавливаем свет с синеватым отливом, чтобы источник был примерно как у Моры
+MoraL.color = (0.58, 0.58, 1)
+
+# Свет от Солнца (будет идти сверху-справа)
+bpy.ops.object.light_add(type='SUN', location=(-10, -10, -10), rotation=(31*pi/180, 0*pi/180, 75*pi/180))
+SunObj = view_layer.objects.active
+SunL   = bpy.data.lights[len(bpy.data.lights)-1]
+SunObj.name = 'Солнце'
+SunL.energy = 3
+SunL.angle  = 0.5*pi/180
+SunL.cycles.max_bounces = 5
+
+# Устанавливаем свет с синеватым отливом, чтобы источник был примерно как у Моры
+SunL.color = (1, 1, 0.98)
+
+# -------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
+
+# Создаём основные объекты сцены
 Коридор = СоздатьКоридор()
 СоздатьДвери(Коридор)
 
 
+
+# -------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
+
+# Устанавливаем, что на объектах нет текстуры
+for obj in bpy.data.objects:
+	obj.display_type = 'SOLID' # TEXTURED
+
+# Добавляем настройки рендера
+bpy.data.scenes[0].render.engine = 'CYCLES'
+bpy.data.scenes[0].cycles.samples = Samples
+# bpy.data.scenes[0].cycles.seed = 0
+bpy.data.scenes[0].cycles.denoising_prefilter = Prefilter
+bpy.data.scenes[0].cycles.use_denoising = use_denoising
+# Эта штука позволяет сделать сцену более освещённой при рендеринге
+bpy.data.scenes[0].cycles.volume_step_rate = 0.01
+
+
+try:
+	bpy.data.worlds["World"].node_tree.nodes.remove(bpy.data.worlds["World"].node_tree.nodes["Background"])
+except:
+	None
