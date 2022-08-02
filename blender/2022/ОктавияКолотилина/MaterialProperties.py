@@ -121,6 +121,11 @@ class MaterialProperties:
 
 		mesh.from_pydata(vertices, edjes, faces)
 		mesh.update(calc_edges = calc_edges)
+		
+		view_layer.objects.active = object
+		bpy.ops.object.mode_set(mode='EDIT')
+		bpy.ops.mesh.normals_make_consistent(inside=False)
+		bpy.ops.object.mode_set(mode='OBJECT')
 
 		object.select_set(True)
 		view_layer.objects.active = object

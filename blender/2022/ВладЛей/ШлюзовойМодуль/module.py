@@ -1,5 +1,6 @@
-# Использование итоговой иллюстрации не допускается
+# Использование итоговой иллюстрации не допускается (используется в книге, указанной выше)
 # Автор илллюстрации https://author.today/u/alrtat
+# Иллюстрация для https://author.today/reader/166459/1360984 (Влад Лей, "Один", глава 5)
 
 import sys
 import os
@@ -15,7 +16,7 @@ Samples   = 1024
 Prefilter = 'ACCURATE'
 use_denoising = True
 
-SimpleRendering = True
+SimpleRendering = False
 
 if SimpleRendering:
 	Samples   = 6
@@ -161,6 +162,7 @@ def СоздатьОкно(object, location, rotation, size, cleanup=True):
 	"""
 	
 	view_layer = bpy.context.view_layer
+	bpy.ops.object.select_all(action="DESELECT")
 
 	R = size[3]
 	
@@ -187,33 +189,84 @@ def СоздатьОкно(object, location, rotation, size, cleanup=True):
 			objs.append(sub)
 			view_layer.objects.active = object
 			bpy.ops.object.modifier_add(type='BOOLEAN')
-			object.modifiers["Boolean"].object = sub # bpy.data.objects[sub.name_full]
-			bpy.ops.object.modifier_apply(modifier="Boolean")
+			object.modifiers["Boolean"].operation  = "DIFFERENCE"
+			object.modifiers["Boolean"].object     = sub # bpy.data.objects[sub.name_full]
+			bpy.ops.object.modifier_apply(modifier = "Boolean")
 			
 			bpy.ops.object.select_all(action="DESELECT")
 
 			# МатериалДверей = MatProps.addMaterial(BaseColor=(1, 0, 0), Roughness=1, name="AAABBB",  obj=sub)
 
+			
+	# Первый куб
 	loc = (location[0]-R/2, location[1], location[2] - R/2)
 
 	# sz = (size[0]+R, size[2], -size[1])
 	sz = (size[0]+R, 0.25, -size[1]+R)
-	sub = MatProps.createCube("ОкноПравойДвериКуб.1", sz, loc)
+	[sub, _] = MatProps.createCube("ОкноПравойДвериКуб.1", sz, loc)
 	objs.append(sub)
+	
+	view_layer.objects.active = object
+	bpy.ops.object.modifier_add(type='BOOLEAN')
+	object.modifiers["Boolean"].operation  = "DIFFERENCE"
+	object.modifiers["Boolean"].object     = sub # bpy.data.objects[sub.name_full]
+	bpy.ops.object.modifier_apply(modifier = "Boolean")
 
-	#bpy.ops.object.select_all(action="DESELECT")
+	bpy.ops.object.select_all(action="DESELECT")
 
+
+	# Второй куб
 	loc = (location[0]+R/2, location[1], location[2] + R/2)
 
 	sz = (size[0]-R, size[2], -size[1]-R)
-	sub = MatProps.createCube("ОкноПравойДвериКуб.2", sz, loc)
+	[sub, _] = MatProps.createCube("ОкноПравойДвериКуб.2", sz, loc)
 	objs.append(sub)
 	
+	view_layer.objects.active = object
+	bpy.ops.object.modifier_add(type='BOOLEAN')
+	object.modifiers["Boolean"].operation  = "DIFFERENCE"
+	object.modifiers["Boolean"].object     = sub # bpy.data.objects[sub.name_full]
+	bpy.ops.object.modifier_apply(modifier = "Boolean")
+	
 	bpy.ops.object.select_all(action="DESELECT")
+	
+	united = objs[0]
+	for obj in objs:
+		if united == obj:
+			continue
+
+		view_layer.objects.active = united
+		bpy.ops.object.modifier_add(type='BOOLEAN')
+		united.modifiers["Boolean"].operation  = "UNION"
+		united.modifiers["Boolean"].object     = obj # bpy.data.objects[sub.name_full]
+		bpy.ops.object.modifier_apply(modifier = "Boolean")
+
+		bpy.ops.object.select_all(action="DESELECT")
+		bpy.data.objects.remove(obj)
+
+	united.name = "ОкноПравойДвери"
+	
+	МатериалОкна = MatProps.addMaterial(BaseColor=(0.0, 0.0, 0.0), Roughness=0.0, Specular=1, name="МатериалОкна",  obj=united)
+	
+	toRemove = МатериалОкна.node_tree.nodes['Principled BSDF']
+	МатериалОкна.node_tree.nodes.remove(toRemove)
+	matOutput = МатериалОкна.node_tree.nodes['Material Output']
+	
+	texImage_node = МатериалОкна.node_tree.nodes.new('ShaderNodeBsdfGlass')
+
+    МатериалОкна.node_tree.links.new(texImage_node.outputs[0], matOutput.inputs[0])
+	
+	# bpy.data.materials['PlanetMaterial.МатериалТочкиЗахвата'].node_tree.nodes['Checker Texture']
+	inp = МатериалОкна.node_tree.nodes['Glass BSDF'].inputs
+	inp['Color']    .default_value = (1, 1, 1, 1)
+	inp['Roughness'].default_value = 0
+	inp['IOR']      .default_value = 1.45
+	МатериалОкна.node_tree.nodes['Glass BSDF'].distribution = "SHARP"
 
 	if cleanup:
-		for obj in objs:
-			bpy.data.objects.remove(obj)
+		# for obj in objs:
+		#	bpy.data.objects.remove(obj)
+		bpy.data.objects.remove(united)
 
 
 def СоздатьДвери(Коридор):
@@ -378,22 +431,58 @@ def ДобавитьТочкуЗахвата():
 
 	cyl = view_layer.objects.active
 	
-	МатериалУплотнения = MatProps.addMaterial(BaseColor=(0.1, 0.1, 0.1), Roughness=0.5, Specular=1, name="МатериалТочкиЗахвата",  obj=cyl)
-	
-	МатериалУплотнения.node_tree.nodes.remove(МатериалУплотнения.node_tree.nodes['Principled BSDF'])
-	matOutput = МатериалУплотнения.node_tree.nodes['Material Output']
-	
-	texImage_node = МатериалУплотнения.node_tree.nodes.new('ShaderNodeTexChecker')
+	МатериалТочкиЗахвата = MatProps.addMaterial(BaseColor=(1, 1, 1), Roughness=0.0, Specular=1, Metallic=0, name="МатериалТочкиЗахвата",  obj=cyl)
 
-    МатериалУплотнения.node_tree.links.new(texImage_node.outputs[0], matOutput.inputs[0])
+	# Текстура не реагирует на освещение, поэтому я её убрал
+	"""
+	toRemove = МатериалТочкиЗахвата.node_tree.nodes['Principled BSDF']
+	МатериалТочкиЗахвата.node_tree.nodes.remove(toRemove)
+	matOutput = МатериалТочкиЗахвата.node_tree.nodes['Material Output']
+	
+	texImage_node = МатериалТочкиЗахвата.node_tree.nodes.new('ShaderNodeTexChecker')
+
+    МатериалТочкиЗахвата.node_tree.links.new(texImage_node.outputs[0], matOutput.inputs[0])
 	
 	# bpy.data.materials['PlanetMaterial.МатериалТочкиЗахвата'].node_tree.nodes['Checker Texture']
-	inp = МатериалУплотнения.node_tree.nodes['Checker Texture'].inputs
+	inp = МатериалТочкиЗахвата.node_tree.nodes['Checker Texture'].inputs
 	inp['Color1'].default_value = (1, 1, 1, 1)
 	inp['Color2'].default_value = (0, 0, 0, 1)
 	inp['Scale'] .default_value = 3
-	
+	"""
 
+	
+def ДобавитьПанельУправленияДверями(Коридор, Enabled=True):
+
+	[_, _, vert, _, _] = Коридор
+	size = (0.3, 0.01, 0.5)
+	loc0 = (
+			vert[11][0] + (vert[3][0] - vert[11][0] - size[0])/2,
+			vert[11][1],
+			vert[11][2] + (vert[13][2] - vert[11][2])/4
+			)
+
+	cube = MatProps.createCube("ПанельУправленияДверями", size, loc0 = loc0)
+	
+	# Панель может быть включена или выключена
+	МатериалПанелиУправленияДверями = MatProps.addMaterial(BaseColor=(0, 0, 0), Roughness=0.0, Specular=1, Metallic=0, name="МатериалПанелиУправленияДверями",  obj=cube[0])
+
+	inp = МатериалПанелиУправленияДверями.node_tree.nodes['Principled BSDF'].inputs
+	inp['Emission'] .default_value[0] = 0
+	inp['Emission'] .default_value[1] = 255
+	inp['Emission'] .default_value[2] = 0
+	inp['Emission'] .default_value[3] = 255
+
+	if Enabled:
+		inp['Emission Strength'].default_value = 0.001
+	else:
+		inp['Emission Strength'].default_value = 0.0
+
+	inp['Base Color']       .default_value = (  255,  255,    255, 255)
+	inp['Subsurface']       .default_value = 10.0
+	inp['Subsurface Color'] .default_value = (    0,    0,      0, 255)
+	inp['Subsurface Radius'].default_value = (0.001, 0.001, 0.001)
+	inp['Subsurface IOR']   .default_value = 1.0
+	
 
 # -------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------
@@ -441,6 +530,7 @@ SunL.color = (1, 1, 0.98)
 Коридор = СоздатьКоридор()
 СоздатьДвери(Коридор)
 ДобавитьТочкуЗахвата()
+ДобавитьПанельУправленияДверями(Коридор, False)
 
 # -------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------
