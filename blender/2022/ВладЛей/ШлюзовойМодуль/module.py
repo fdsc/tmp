@@ -131,7 +131,90 @@ def СоздатьКоридор():
 	МатериалКоридора = MatProps.addMaterial(BaseColor=(0.5, 0.5, 0.5), Roughness=1, name="МатериалКоридора",  obj=object)
 
 	
+	# Свет в коридоре
+	H = GP.ВысотаМодуля
+	W = GP.ШиринаМодуля
+	T = GP.ТолщинаСтенокМодуля
+	R = 0.08
+
+	ВысотаПотолка = H - T
+
+	# bpy.data.objects['Светильник']
+	lamp_data = bpy.data.lights.new(name="Светильник", type='POINT')
+
+	lamp_data.energy             = 1e4
+	lamp_data.shadow_soft_size   = R		# Размер источника света
+	lamp_data.cycles.max_bounces = 8
+	lamp_data.color			     = (1, 1, 1)
+
+	lamp_object = bpy.data.objects.new(name="Светильник", object_data=lamp_data)
+	bpy.context.collection.objects.link(lamp_object)
+
+	lamp_object.location = (W/2, 6, ВысотаПотолка - R)
+
+	
 	return object, mesh, vertices, edjes, faces
+
+def СоздатьОкно(object, location, rotation, size, cleanup=True):
+	"""
+		size		- 	Ширина и высота окна, глубина окна, радиусы скруглений
+	"""
+	
+	view_layer = bpy.context.view_layer
+
+	R = size[3]
+	
+	objs = []
+
+	for sx in range(2):
+		for sy in range(2):
+	
+			if sx == 0:
+				sxm = +1
+			else:
+				sxm = -1
+			if sy == 0:
+				sym = +1
+			else:
+				sym = -1
+	
+			loc = (location[0] + size[0] * sx + R/2*sxm, location[1] + size[2]/2, location[2] - size[1] * sy - R/2*sym)
+
+			bpy.ops.mesh.primitive_cylinder_add(enter_editmode=False, align='WORLD', location=loc, scale=(1, 1, 1), depth = size[2], radius = R, rotation=rotation)
+
+			sub = view_layer.objects.active
+			sub.name = 'ОкноПравойДвериСкругления'
+			objs.append(sub)
+			view_layer.objects.active = object
+			bpy.ops.object.modifier_add(type='BOOLEAN')
+			object.modifiers["Boolean"].object = sub # bpy.data.objects[sub.name_full]
+			bpy.ops.object.modifier_apply(modifier="Boolean")
+			
+			bpy.ops.object.select_all(action="DESELECT")
+
+			# МатериалДверей = MatProps.addMaterial(BaseColor=(1, 0, 0), Roughness=1, name="AAABBB",  obj=sub)
+
+	loc = (location[0]-R/2, location[1], location[2] - R/2)
+
+	# sz = (size[0]+R, size[2], -size[1])
+	sz = (size[0]+R, 0.25, -size[1]+R)
+	sub = MatProps.createCube("ОкноПравойДвериКуб.1", sz, loc)
+	objs.append(sub)
+
+	#bpy.ops.object.select_all(action="DESELECT")
+
+	loc = (location[0]+R/2, location[1], location[2] + R/2)
+
+	sz = (size[0]-R, size[2], -size[1]-R)
+	sub = MatProps.createCube("ОкноПравойДвериКуб.2", sz, loc)
+	objs.append(sub)
+	
+	bpy.ops.object.select_all(action="DESELECT")
+
+	if cleanup:
+		for obj in objs:
+			bpy.data.objects.remove(obj)
+
 
 def СоздатьДвери(Коридор):
 	[_, _, vert, _, _] = Коридор
@@ -139,7 +222,9 @@ def СоздатьДвери(Коридор):
 	Уплотнение   = 0.025
 	Зазор        = 0.001
 	Смещение     = 0.01
-	ТолщинаДвери = 0.002 # Это получается чуть ли не 40 см, не понял
+	ТолщинаДвери = 0.25
+	
+	GP.Смещение  = Смещение
 	
 	# Правая дверь
 	v  = vert[8:]
@@ -170,7 +255,7 @@ def СоздатьДвери(Коридор):
 	[object, mesh] = MatProps.createObject(
 		name=name, vertices=v, faces=f, edjes=[], loc0=(0, +Смещение, 0)
 		)
-
+	
 	vr = v
 
 	bpy.ops.object.editmode_toggle()
@@ -178,9 +263,19 @@ def СоздатьДвери(Коридор):
 	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -ТолщинаДвери), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
 	
 	bpy.ops.object.mode_set(mode='OBJECT')
+	bpy.ops.object.select_all(action="DESELECT")
 	
+	# Делаем окно в правой двери
+	x  = vr[8][0]
+	dx = (vr[5][0]-vr[8][0]) / 4
+	x += dx
+	
+	СоздатьОкно(object, (x, +Смещение, vr[8][2]), (90*pi/180, 0, 0), (dx*2, dx*2, ТолщинаДвери, 0.1), cleanup=False)
+
+
 	МатериалДверей = MatProps.addMaterial(BaseColor=(0.5, 0.5, 0.5), Roughness=1, name="МатериалДверей",  obj=object)
 
+	GP.ПраваяДверь = [object, mesh, МатериалДверей]
 
 	
 	# Левая дверь
@@ -228,9 +323,12 @@ def СоздатьДвери(Коридор):
 	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -ТолщинаДвери), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
 	
 	bpy.ops.object.mode_set(mode='OBJECT')
+	bpy.ops.object.select_all(action="DESELECT")
 
 	bpy.ops.object.material_slot_add()
 	object.material_slots[0].material = МатериалДверей
+	
+	GP.ЛеваяДверь = [object, mesh, МатериалДверей]
 	
 	
 	# Уплотнение между дверями
@@ -256,13 +354,16 @@ def СоздатьДвери(Коридор):
 	
 	bpy.ops.object.editmode_toggle()
 
-	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -0.2), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
+	bpy.ops.mesh.extrude_context_move(MESH_OT_extrude_context={"use_normal_flip":False, "use_dissolve_ortho_edges":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, -ТолщинаДвери), "orient_axis_ortho":'X', "orient_type":'NORMAL', "orient_matrix":((-1, 0, 0), (-0, -0, -1), (0, -1, 0)), "orient_matrix_type":'NORMAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "view2d_edge_pan":False, "release_confirm":True, "use_accurate":False, "use_automerge_and_split":False})
 	
 	bpy.ops.object.mode_set(mode='OBJECT')
+	bpy.ops.object.select_all(action="DESELECT")
 
 	МатериалУплотнения = MatProps.addMaterial(BaseColor=(0, 0, 0), Roughness=1, name="МатериалУплотнения",  obj=object)
 
-	
+	GP.УплотнениеМеждуДверями = [object, mesh, МатериалУплотнения]
+
+
 def ДобавитьТочкуЗахвата():
 	
 	view_layer = bpy.context.view_layer
@@ -291,6 +392,7 @@ def ДобавитьТочкуЗахвата():
 	inp['Color1'].default_value = (1, 1, 1, 1)
 	inp['Color2'].default_value = (0, 0, 0, 1)
 	inp['Scale'] .default_value = 3
+	
 
 
 # -------------------------------------------------------------------------------------
@@ -339,7 +441,6 @@ SunL.color = (1, 1, 0.98)
 Коридор = СоздатьКоридор()
 СоздатьДвери(Коридор)
 ДобавитьТочкуЗахвата()
-
 
 # -------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------

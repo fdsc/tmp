@@ -102,7 +102,7 @@ class MaterialProperties:
 		bpy.ops.object.select_all()
 		bpy.ops.object.delete(confirm=False)
 
-	def createObject(this, name, vertices, faces, edjes, loc0 = (0, 0, 0)):
+	def createObject(this, name, vertices, faces, edjes=[], loc0 = (0, 0, 0)):
 
 		#Define mesh and object
 		mesh   = bpy.data.meshes.new(name)
@@ -126,3 +126,31 @@ class MaterialProperties:
 		view_layer.objects.active = object
 		
 		return object, mesh
+
+	# Куб создаётся по координатам нижней левой ближней точки
+	def createCube(this, name, size, loc0 = (0, 0, 0)):
+
+		# Точки сверху: +1
+		# Точки, дальние по оси y: +2
+		# Точки, смещённые по оси x: +4
+		vertices = []
+		for ix in range(2):
+			for iy in range(2):
+				for iz in range(2):
+					loc = (size[0]*ix, size[1]*iy, size[2]*iz)
+					vertices.append(loc)
+
+		faces = []
+		faces.append((0, 1, 5, 4))
+		faces.append((0, 1, 3, 2))
+		faces.append((0, 2, 6, 4))
+		faces.append((7, 5, 1, 3))
+		faces.append((7, 5, 4, 6))
+		faces.append((7, 3, 2, 6))
+
+		[obj, mesh]  = this.createObject(name, vertices, faces, [])
+		obj.location = loc0
+
+		return obj, mesh
+
+	
