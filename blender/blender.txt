@@ -2,6 +2,8 @@ https://www.blender.org/
 https://docs.blender.org/
 https://docs.blender.org/api/current/info_quickstart.html
 
+В меню (квадратик слева сверху под меню) выбрать "Python Console"
+
 Включить в preferences => interface => Developer Extras и Python tooltips
 
 Чтобы отображать все операторы, включая прокрутку мыши, выполнить команду
