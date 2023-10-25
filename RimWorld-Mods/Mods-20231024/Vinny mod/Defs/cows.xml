@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+
+<!-- Животные и шерсть -->
+
+<ThingDef Name="VinnyCowColdBase" ParentName="AnimalThingBase" Abstract="True">
+    <defName>VinnyCowColdBase</defName>
+    <label>VinnyCowCold Base</label>
+    <!-- description>Vinny cow</description -->
+    <statBases>
+      <MoveSpeed>11</MoveSpeed>
+      <ComfyTemperatureMin>-80</ComfyTemperatureMin>
+      <ComfyTemperatureMax>+80</ComfyTemperatureMax>
+      <MarketValue>1</MarketValue>
+      <FilthRate>32</FilthRate>
+      <CaravanRidingSpeedFactor>2.0</CaravanRidingSpeedFactor>
+    </statBases>
+    <race>
+      <body>QuadrupedAnimalWithHooves</body>
+      <herdAnimal>true</herdAnimal>
+      <baseBodySize>2.4</baseBodySize>
+      <!-- baseHungerRate>1.0</baseHungerRate -->
+      <baseHungerRate>0.1</baseHungerRate>
+      <baseHealthScale>1.5</baseHealthScale>
+      <!-- foodType>VegetarianRoughAnimal, OvivoreAnimal, DendrovoreAnimal, VegetableOrFruit</foodType -->
+      <foodType>None</foodType>
+      <leatherDef>Leather_Plain</leatherDef>
+      <wildness>0</wildness>
+      <petness>1.0</petness>
+      <!--trainability>Advanced</trainability-->
+      <trainability>Intermediate</trainability>
+      <nuzzleMtbHours>12</nuzzleMtbHours>
+      <meatLabel>beef</meatLabel>
+      <packAnimal>true</packAnimal>
+      <gestationPeriodDays>12</gestationPeriodDays>
+      <lifeExpectancy>800</lifeExpectancy>
+      <lifeStageAges>
+        <li>
+          <def>AnimalBaby</def>
+          <minAge>0</minAge>
+        </li>
+        <li>
+          <def>AnimalJuvenile</def>
+          <minAge>3</minAge>
+        </li>
+        <li>
+          <def>AnimalAdult</def>
+          <minAge>8</minAge>
+          <soundWounded>Pawn_Muffalo_Wounded</soundWounded>
+          <soundDeath>Pawn_Muffalo_Death</soundDeath>
+          <soundCall>Pawn_Muffalo_Call</soundCall>
+          <soundAngry>Pawn_Muffalo_Angry</soundAngry>
+        </li>
+      </lifeStageAges>
+      <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+      <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+    </race>
+    <tradeTags>
+      <li>AnimalCommon</li>
+      <li>AnimalFarm</li>
+    </tradeTags>
+    <tools>
+      <li>
+        <capacities>
+          <li>Bite</li>
+        </capacities>
+        <power>5</power>
+        <cooldownTime>0.5</cooldownTime>
+        <linkedBodyPartsGroup>Teeth</linkedBodyPartsGroup>
+        <chanceFactor>0.7</chanceFactor>
+      </li>
+      <li>
+        <label>head</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>12</power>
+        <cooldownTime>0.5</cooldownTime>
+        <linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
+        <ensureLinkedBodyPartsGroupAlwaysUsable>true</ensureLinkedBodyPartsGroupAlwaysUsable>
+        <chanceFactor>0.2</chanceFactor>
+      </li>
+      <li>
+        <label>left hoof</label>
+        <capacities>
+          <li>Blunt</li>
+          <li>Poke</li>
+        </capacities>
+        <power>8</power>
+        <cooldownTime>0.5</cooldownTime>
+        <linkedBodyPartsGroup>FrontLeftLeg</linkedBodyPartsGroup>
+      </li>
+      <li>
+        <label>right hoof</label>
+        <capacities>
+          <li>Blunt</li>
+          <li>Poke</li>
+        </capacities>
+        <power>8</power>
+        <cooldownTime>0.5</cooldownTime>
+        <linkedBodyPartsGroup>FrontRightLeg</linkedBodyPartsGroup>
+      </li>
+    </tools>
+  </ThingDef>
+
+  <ThingDef ParentName="VinnyCowColdBase">
+    <defName>VinnyCowColdMilkWool</defName>
+    <label>VinnyCowCold</label>
+    <description>Vinny cow get milk and wool</description>
+    <comps>
+      <li Class="CompProperties_Forbiddable"/>
+      <!--li Class="CompProperties_Milkable">
+        <milkDef>Milk</milkDef>
+        <milkIntervalDays>1</milkIntervalDays>
+        <milkAmount>100</milkAmount>
+      </li-->
+
+      <li Class="CompProperties_Shearable">
+        <woolDef>VinnyCowColdWool</woolDef>
+        <shearIntervalDays>1</shearIntervalDays>
+        <woolAmount>10</woolAmount>
+      </li>
+      <!-- li Class="CompProperties_Glower">
+        <overlightRadius>1</overlightRadius>
+        <glowRadius>2</glowRadius>
+        <glowColor>(370,370,0,0)</glowColor>
+      </li -->
+      <li Class="CompProperties_HeatPusher">
+        <compClass>CompHeatPusherPowered</compClass>
+        <heatPerSecond>0.1</heatPerSecond>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <PawnKindDef Name="PawnVinnyCowColdBase" ParentName="AnimalKindBase" Abstract="True">
+    <combatPower>100</combatPower>
+    <ecoSystemWeight>1.1</ecoSystemWeight>
+    <wildGroupSize>3~9</wildGroupSize>
+    <lifeStages>
+      <li>
+        <label>VinnyCowCold calf</label>
+        <labelPlural>VinnyCowCold calves</labelPlural>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Muffalo/Muffalo</texPath>
+          <drawSize>1.5</drawSize>
+          <shadowData>
+            <volume>(0.4, 0.3, 0.3)</volume>
+            <offset>(0,0,-0.2)</offset>
+          </shadowData>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Muffalo/Dessicated_Muffalo</texPath>
+          <drawSize>1.5</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Muffalo/Muffalo</texPath>
+          <drawSize>2.25</drawSize>
+          <shadowData>
+            <volume>(0.6, 0.45, 0.45)</volume>
+            <offset>(0,0,-0.25)</offset>
+          </shadowData>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Muffalo/Dessicated_Muffalo</texPath>
+          <drawSize>2.25</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Muffalo/Muffalo</texPath>
+          <drawSize>3</drawSize>
+          <shadowData>
+            <volume>(0.8, 0.6, 0.6)</volume>
+            <offset>(0,0,-0.3)</offset>
+          </shadowData>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Muffalo/Dessicated_Muffalo</texPath>
+          <drawSize>3</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+    </lifeStages>
+  </PawnKindDef>
+  
+ <PawnKindDef ParentName="PawnVinnyCowColdBase">
+      <defName>VinnyCowColdMilkWool</defName>
+    <label>VinnyCowColdMilkWool</label>
+    <race>VinnyCowColdMilkWool</race>
+  </PawnKindDef>
+  
+  <ThingDef ParentName="WoolBase">
+    <defName>VinnyCowColdWool</defName>
+    <label>VinnyCowCold wool</label>
+    <description>VinnyCowCold wool</description>
+    <statBases>
+      <StuffPower_Insulation_Cold>34</StuffPower_Insulation_Cold>
+      <StuffPower_Insulation_Heat>24</StuffPower_Insulation_Heat>
+      <MaxHitPoints>200</MaxHitPoints>
+      <MarketValue>1</MarketValue>
+      <Mass>0.025</Mass>
+      <Flammability>0.0</Flammability>
+      <DeteriorationRate>30</DeteriorationRate>
+      <StuffPower_Armor_Sharp>1.0</StuffPower_Armor_Sharp>
+      <StuffPower_Armor_Blunt>1.5</StuffPower_Armor_Blunt>
+      <StuffPower_Armor_Heat>5.0</StuffPower_Armor_Heat>
+    </statBases>
+    <graphicData>
+      <color>(179,192,186)</color>
+    </graphicData>
+    <stuffProps>
+      <color>(179,192,186)</color>
+      <statFactors>
+        <Flammability>0.0</Flammability>
+        <MaxHitPoints>2.0</MaxHitPoints>
+        <Beauty>1.0</Beauty>
+      </statFactors>
+    </stuffProps>
+  </ThingDef>
+
+
+
+<!-- Животные-носильщики -->
+
+  <ThingDef ParentName="AnimalThingBase">
+    <defName>VinnyCat</defName>
+    <label>cat by vinny</label>
+    <devNote>cat</devNote>
+    <description>VinnyCat; fast</description>
+    <statBases>
+      <MoveSpeed>14.4</MoveSpeed>
+      <MarketValue>1000</MarketValue>
+      <ComfyTemperatureMin>-80</ComfyTemperatureMin>
+      <ComfyTemperatureMax>+80</ComfyTemperatureMax>
+      <FilthRate>0</FilthRate>
+    </statBases>
+    <race>
+      <body>QuadrupedAnimalWithPawsAndTail</body>
+      <predator>true</predator>
+	  <herdAnimal>false</herdAnimal>
+      <baseBodySize>3.32</baseBodySize>
+      <baseHungerRate>0.015</baseHungerRate>
+      <baseHealthScale>0.042</baseHealthScale>
+      <foodType>AnimalProduct, Liquor, Fluid, VegetableOrFruit, CarnivoreAnimal, OvivoreAnimal</foodType>
+      <leatherDef>Leather_Light</leatherDef>
+      <wildness>0</wildness>
+      <petness>1</petness>
+      <trainability>Advanced</trainability>
+      <nuzzleMtbHours>12</nuzzleMtbHours>
+      <gestationPeriodDays>120</gestationPeriodDays>
+      <litterSizeCurve>
+        <points>
+          <li>(0.5, 0)</li>
+          <li>(1, 1)</li>
+          <li>(2, 1.7)</li>
+          <li>(3, 0.7)</li>
+          <li>(3.5, 0)</li>
+        </points>
+      </litterSizeCurve>
+      <lifeExpectancy>100</lifeExpectancy>
+      <lifeStageAges>
+        <li>
+          <def>AnimalBaby</def>
+          <minAge>0</minAge>
+        </li>
+        <li>
+          <def>AnimalJuvenile</def>
+          <minAge>0.15</minAge>
+        </li>
+        <li>
+          <def>AnimalAdult</def>
+          <minAge>0.4</minAge>
+          <soundWounded>Pawn_Cat_Injured</soundWounded>
+          <soundDeath>Pawn_Cat_Death</soundDeath>
+          <soundCall>Pawn_Cat_Call</soundCall>
+          <soundAngry>Pawn_Cat_Angry</soundAngry>
+        </li>
+      </lifeStageAges>
+      <soundMeleeHitPawn>Pawn_Melee_SmallScratch_HitPawn</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>Pawn_Melee_SmallScratch_HitBuilding</soundMeleeHitBuilding>
+      <soundMeleeMiss>Pawn_Melee_SmallScratch_Miss</soundMeleeMiss>
+      <headPosPerRotation>
+        <li>(0.02, 0, 0.23)</li>
+        <li>(0.35, 0, 0.05)</li>
+        <li>(0.0, 0, -0.185)</li>
+        <li>(-0.35, 0, 0.05)</li>
+      </headPosPerRotation>
+    </race>
+    <tradeTags>
+      <li>AnimalCommon</li>
+      <li>AnimalPet</li>
+    </tradeTags>
+    <tools>
+      <li>
+        <label>left claw</label>
+        <capacities>
+          <li>Scratch</li>
+        </capacities>
+        <power>0.1</power>
+        <cooldownTime>0.05</cooldownTime>
+        <linkedBodyPartsGroup>FrontLeftPaw</linkedBodyPartsGroup>
+        <surpriseAttack>
+          <extraMeleeDamages>
+            <li>
+              <def>Stun</def>
+              <amount>1</amount>
+            </li>
+            <li>
+              <def>EMP</def>
+              <amount>1</amount>
+            </li>
+            <li>
+              <def>Flame</def>
+              <amount>1</amount>
+              <chance>0.7</chance>
+            </li>
+          </extraMeleeDamages>
+        </surpriseAttack>
+      </li>
+      <li>
+        <label>right claw</label>
+        <capacities>
+          <li>Scratch</li>
+        </capacities>
+        <power>0.1</power>
+        <cooldownTime>0.05</cooldownTime>
+        <linkedBodyPartsGroup>FrontRightPaw</linkedBodyPartsGroup>
+        <surpriseAttack>
+          <extraMeleeDamages>
+            <li>
+              <def>Stun</def>
+              <amount>1</amount>
+            </li>
+            <li>
+              <def>EMP</def>
+              <amount>1</amount>
+            </li>
+            <li>
+              <def>Flame</def>
+              <amount>1</amount>
+              <chance>0.7</chance>
+            </li>
+          </extraMeleeDamages>
+        </surpriseAttack>
+      </li>
+    </tools>
+  </ThingDef>
+  
+  <PawnKindDef ParentName="AnimalKindBase">
+    <defName>VinnyCat</defName>
+    <label>VinnyCat</label>
+    <race>VinnyCat</race>
+    <combatPower>0</combatPower>
+    <ecoSystemWeight>0.01</ecoSystemWeight>
+    <lifeStages>
+      <li>
+        <label>kitten by vinny</label>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Cat/Cat</texPath>
+          <drawSize>0.6</drawSize>
+          <color>(189,171,159)</color>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Cat/Dessicated_Cat</texPath>
+          <drawSize>0.6</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Cat/Cat</texPath>
+          <drawSize>0.8</drawSize>
+          <color>(189,171,159)</color>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Cat/Dessicated_Cat</texPath>
+          <drawSize>0.8</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Cat/Cat</texPath>
+          <drawSize>1.0</drawSize>
+          <color>(189,171,159)</color>
+          <shadowData>
+            <volume>(0.25, 0.3, 0.25)</volume>
+            <offset>(0,0,-0.15)</offset>
+          </shadowData>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Cat/Dessicated_Cat</texPath>
+          <drawSize>1.0</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+    </lifeStages>
+  </PawnKindDef>
+	
+
+</Defs>
