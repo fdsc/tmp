@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+
+  <ThingDef ParentName="ApparelNoQualityBase" Name="VinnyBracelet" Abstract="True">
+    <label>VinnyBracelet</label>
+    <description>VinnyBracelet</description>
+    <thingClass>Apparel</thingClass>
+    <graphicData>
+	    <texPath>1</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+	  <drawSize>0.05</drawSize>
+    </graphicData>
+
+	<possessionCount>1</possessionCount>
+
+    <apparel>
+      <layers>
+        <li>OnSkin</li>
+      </layers>
+      <tags>
+        <li>Royal</li>
+        <li>RoyalTier2</li>
+        <li>RoyalTier5</li>
+      </tags>
+
+      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+      <countsAsClothingForNudity>false</countsAsClothingForNudity>
+      <careIfWornByCorpse>true</careIfWornByCorpse>
+      <careIfDamaged>true</careIfDamaged>
+      <wearPerDay>0</wearPerDay>
+      <developmentalStageFilter>Adult</developmentalStageFilter>
+
+    </apparel>
+    <tickerType>Normal</tickerType>
+    <techLevel>Spacer</techLevel>
+    <statBases>
+      <Mass>0.03</Mass>
+      <Flammability>0.0</Flammability>
+      <EnergyShieldRechargeRate>0.011</EnergyShieldRechargeRate>
+      <EnergyShieldEnergyMax>1.1</EnergyShieldEnergyMax>
+      <EquipDelay>0.2</EquipDelay>
+
+	  <MaxHitPoints>10000</MaxHitPoints>
+      <DeteriorationRate>1</DeteriorationRate>
+      <Beauty>+37</Beauty>
+    </statBases>
+	<equippedStatOffsets>
+      <PawnBeauty>+1</PawnBeauty>
+	  <SocialImpact>0.2</SocialImpact>
+	  <SlaveSuppressionOffset MayRequire="Ludeon.RimWorld.Ideology">-0.25</SlaveSuppressionOffset>
+    </equippedStatOffsets>
+    <thingCategories>
+      <li>ApparelNoble</li>
+    </thingCategories>
+    <comps>
+      <li Class="CompProperties_Shield" />
+    </comps>
+    <allowedArchonexusCount>1</allowedArchonexusCount>
+  </ThingDef>
+
+	
+  <ThingDef ParentName="VinnyBracelet">
+    <defName>VinnyBraceletLeg</defName>
+    <label>VinnyBraceletLeg</label>
+    <description>VinnyBraceletLeg</description>
+    <apparel>
+      <bodyPartGroups>
+        <li>Legs</li>
+      </bodyPartGroups>
+    </apparel>
+  </ThingDef>
+
+  <ThingDef ParentName="VinnyBracelet">
+    <defName>VinnyBraceletHand</defName>
+    <label>VinnyBraceletHand</label>
+    <description>VinnyBraceletHand</description>
+    <apparel>
+      <bodyPartGroups>
+        <li>Arms</li>
+      </bodyPartGroups>
+    </apparel>
+  </ThingDef>
+
+
+  <MemeDef>
+    <defName>Queen_Nudity_by_Vinny</defName>
+    <label>Queen Nudity by Vinny</label>
+    <description>Nudity Queen is main</description>
+	  <iconPath>1</iconPath>
+    <groupDef>Misc</groupDef>
+    <impact>3</impact>
+    <requireOne>
+      <li>
+        <li>SmallSpaces_Acceptable</li>
+      </li>
+	  <li>
+        <li>Proselytizing_Occasionally</li>
+        <li>Proselytizing_Sometimes</li>
+        <li>Proselytizing_Frequently</li>
+      </li>
+	  <li>
+        <li>Eclipse_Beautiful</li>
+      </li>
+  	  <li>
+        <li>WorkDrive_Tripled</li>
+      </li>
+      <li>
+        <li>BodyMod_Approved</li>
+      </li>
+      <li>
+        <li>Biosculpting_Accelerated</li>
+      </li>
+      <li>
+        <li>Nudity_Female_NoRules</li>
+        <li>Nudity_Female_Mandatory</li>
+      </li>
+      <li>
+        <li>Lovin_FreeApproved</li>
+      </li>
+      <li>
+        <li>FungusEating_Preferred</li>
+      </li>
+      <li>
+        <li>InsectMeatEating_Loved</li>
+      </li>
+    </requireOne>
+
+    <disagreeableTraits>
+      <li>BodyPurist</li>
+    </disagreeableTraits>
+    <addDesignators>
+      <li>FungalGravel</li>
+    </addDesignators>
+  </MemeDef>
+
+  <PreceptDef>
+    <defName>IdeoRole_Vinny_Queen</defName>
+    <label>Vinny Queen</label>
+    <description>A Vinny Queen who holds the group together and represents your faction in diplomatic interactions.</description>
+    <iconPath>UI/Roles/Leader</iconPath>
+    <leaderRole>true</leaderRole>
+    <displayOrderInImpact>1000</displayOrderInImpact>
+    <expectationsOffset>2</expectationsOffset>
+    <canRemoveInUI>true</canRemoveInUI>
+    <classic>false</classic>
+	<requiredMemes>
+      <li>Queen_Nudity_by_Vinny</li>
+    </requiredMemes>
+
+	<issue>IdeoRole</issue>
+	<preceptClass>Precept_RoleSingle</preceptClass>
+	<certaintyLossFactor>0.5</certaintyLossFactor>
+	<countsTowardsPreceptLimit>false</countsTowardsPreceptLimit>
+	<roleRequirements>
+      <li Class="RoleRequirement_SameIdeo">
+        <labelKey>RoleRequirementLabelSameIdeo</labelKey>
+      </li>
+      <li Class="RoleRequirement_SupremeGender">
+        <labelKey>RoleRequirementLabelSupremeGender</labelKey>
+      </li>
+    </roleRequirements>
+    <comps>
+      <li Class="PreceptComp_SituationalThought">
+        <thought>IdeoRoleApparelRequirementNotMet</thought>
+      </li>
+    </comps>
+    <impact>High</impact>
+    <activationBelieverCount>1</activationBelieverCount>
+    <deactivationBelieverCount>0</deactivationBelieverCount>
+    <classicExtra>true</classicExtra>
+
+
+    <roleEffects>
+      <li Class="RoleEffect_NoRangedWeapons" />
+      <li Class="RoleEffect_PawnStatOffset">
+        <statDef>MeleeHitChance</statDef>
+        <modifier>7</modifier>
+      </li>
+      <li Class="RoleEffect_PawnStatOffset">
+        <statDef>MeleeDodgeChance</statDef>
+        <modifier>7</modifier>
+      </li>
+
+      <li Class="RoleEffect_PawnStatFactor">
+        <statDef>MedicalTendQuality</statDef>
+        <modifier>2.5</modifier>
+      </li>
+      <li Class="RoleEffect_PawnStatFactor">
+        <statDef>MedicalOperationSpeed</statDef>
+        <modifier>1.1</modifier>
+      </li>
+      <li Class="RoleEffect_PawnStatFactor">
+        <statDef>MedicalSurgerySuccessChance</statDef>
+        <modifier>3.1</modifier>
+      </li>
+      <li Class="RoleEffect_GiveThoughtOnTend">
+        <thoughtDef>TendedByMedicalSpecialist</thoughtDef>
+      </li>
+    </roleEffects>
+
+    <roleApparelRequirements>
+      <li>
+		    <anyMemeRequired><li>Queen_Nudity_by_Vinny</li></anyMemeRequired>
+        <requirement>
+          <bodyPartGroupsMatchAny>
+            <li>Legs</li>
+          </bodyPartGroupsMatchAny>
+          <requiredDefs>
+            <li>VinnyBraceletLeg</li>
+          </requiredDefs>
+        </requirement>
+      </li>
+      <li>
+		    <anyMemeRequired><li>Queen_Nudity_by_Vinny</li></anyMemeRequired>
+        <requirement>
+          <bodyPartGroupsMatchAny>
+            <li>Arms</li>
+          </bodyPartGroupsMatchAny>
+          <requiredDefs>
+            <li>VinnyBraceletHand</li>
+          </requiredDefs>
+        </requirement>
+      </li>
+    </roleApparelRequirements>
+    <roleApparelRequirementCountCurve>
+      <points>
+        <li>(0.25, 0)</li>
+		    <li>(0.50, 1)</li>
+        <li>(1.00, 2)</li>
+      </points>
+    </roleApparelRequirementCountCurve>
+
+    <grantedAbilities>
+      <li>LeaderSpeech</li>
+      <li>WorkDrive</li>
+      <li>CombatCommand</li>
+      <li>Trial</li>
+
+      <li>Convert</li>
+      <li>Counsel</li>
+      <li>Reassure</li>
+      <li>ConversionRitual</li>
+      <li>PreachHealth</li>
+	
+	  <li>ImmunityDrive</li>
+    </grantedAbilities>
+
+    <roleTags><li>Leader</li></roleTags>
+  </PreceptDef>
+
+  <PreceptDef ParentName="PreceptRoleSingleBase">
+    <defName>IdeoRole_Vinny_Queen_Warrior</defName>
+    <label>Vinny Queen Warrior</label>
+    <description>A Vinny Queen Warrior who holds the group together and represents your faction in diplomatic interactions.</description>
+    <iconPath>UI/Roles/SpecialistMelee</iconPath>
+    <leaderRole>false</leaderRole>
+    <displayOrderInImpact>0</displayOrderInImpact>
+    <expectationsOffset>-1</expectationsOffset>
+    <canRemoveInUI>true</canRemoveInUI>
+    <classic>true</classic>
+	<requiredMemes>
+      <li>Queen_Nudity_by_Vinny</li>
+    </requiredMemes>
+
+    <roleEffects>
+      <li Class="RoleEffect_NoRangedWeapons" />
+      <li Class="RoleEffect_PawnStatOffset">
+        <statDef>MeleeHitChance</statDef>
+        <modifier>11</modifier>
+      </li>
+      <li Class="RoleEffect_PawnStatOffset">
+        <statDef>MeleeDodgeChance</statDef>
+        <modifier>11</modifier>
+      </li>
+    </roleEffects>
+
+    <grantedAbilities>
+      <li>CombatCommand</li>
+    </grantedAbilities>
+
+  </PreceptDef>
+
+</Defs>

@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <GeneCategoryDef>
+    <defName>VinnyGenes</defName>
+    <label>VinnyGenes</label>
+    <displayPriorityInXenotype>0</displayPriorityInXenotype>
+  </GeneCategoryDef>
+
+<GeneDef Name="VinnyGen" Abstract="True">
+	<defName>VinnyGen</defName>
+
+	<displayCategory>VinnyGenes</displayCategory>
+	<exclusionTags>
+      <li>VinnyGenes</li>
+    </exclusionTags>
+
+	<geneClass>Gene_Deathless</geneClass>		<!-- Регенерируют, пока мозг не разрушен -->
+	<preventPermanentWounds>true</preventPermanentWounds>		<!-- Никогда нет шрамов и ноющих ран -->
+	
+	<foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>		<!-- Не отравляется едой -->
+	<ignoreDarkness>true</ignoreDarkness>		<!-- Видит в темноте -->
+
+	<skinColorOverride>(250, 250, 240)</skinColorOverride>		<!-- Все они - белые люди -->
+  <randomBrightnessFactor>0</randomBrightnessFactor>
+
+	<neverGrayHair>true</neverGrayHair>		<!-- Никогда не седеют -->
+</GeneDef>
+
+	
+<GeneDef Name="VinnyGenQueen" ParentName="VinnyGen">
+    <defName>VinnyGenQueen</defName>
+    <label>Vinny gen Queen</label>
+    <labelShortAdj>Queen</labelShortAdj>
+    <description>Carriers of this gene are Queen.</description>
+    <displayOrderInCategory>0</displayOrderInCategory>
+
+    <biologicalAgeTickFactorFromAgeCurve>		<!-- Ей всегда 18.5 лет - не стареет, но и растёт чуть медленнее -->
+      <points>
+        <li>(0, 0.9)</li>
+        <li>(18.5, 0)</li>
+      </points>
+    </biologicalAgeTickFactorFromAgeCurve>
+
+	<painFactor>0.35</painFactor>
+	<socialFightChanceFactor>0</socialFightChanceFactor>
+	<lovinMTBFactor>0.11</lovinMTBFactor>		<!-- Половое влечение - супер хочет -->  
+
+	<missingGeneRomanceChanceFactor>120</missingGeneRomanceChanceFactor>			<!-- Шанс успешных романтических отношений -->
+	<prisonBreakMTBFactor>+10</prisonBreakMTBFactor>			<!-- Шанс вылезти из тюрьмы -->
+
+	  <conditionalStatAffecters>
+		  <li Class="ConditionalStatAffecter_Clothed">
+			<statOffsets>
+			<Fertility>0</Fertility>			<!-- В одежде - не беременеет -->
+			</statOffsets>
+		  </li>
+		  <li Class="ConditionalStatAffecter_Unclothed">			<!-- Когда раздетая - гораздо красивее -->
+			<statOffsets>
+			  <PawnBeauty>+3</PawnBeauty>
+			  <Fertility>19</Fertility>
+			  <MoveSpeed>+5.0</MoveSpeed>
+			</statOffsets>
+		  </li>
+      </conditionalStatAffecters>
+
+	<statOffsets>
+		<ComfyTemperatureMin>-80</ComfyTemperatureMin>
+	 	<ComfyTemperatureMax>80</ComfyTemperatureMax>
+
+	  <MoveSpeed>+0.0</MoveSpeed>
+
+	  <PawnBeauty>+1</PawnBeauty>			<!-- Красивая, но не очень -->
+
+	  <GlobalLearningFactor>4.7</GlobalLearningFactor>			<!-- Отлично учится -->
+
+	  <ToxicResistance>1</ToxicResistance>
+	  <ToxicEnvironmentResistance>1</ToxicEnvironmentResistance>
+
+	  <RestFallRateFactor>0.2439</RestFallRateFactor>			<!-- Быстро спит -->
+
+	  <MeleeDamageFactor>8.7</MeleeDamageFactor>			<!-- Наносит отличный урон в ближнем бою -->
+
+	  <InjuryHealingFactor>7</InjuryHealingFactor>			<!-- Быстрое заживление ран -->
+	  <ImmunityGainSpeed>11</ImmunityGainSpeed>			<!-- Просто очень сильный иммунитет -->
+
+	  <Flammability>0.01</Flammability>
+	  <RawNutritionFactor>1.8</RawNutritionFactor>		<!-- Хорошо ест сырую еду - 1.8 - обычный ген хорошей усвояемости -->
+
+	  <StaggerDurationFactor>0</StaggerDurationFactor>		<!-- Получение урона не замедляет персонажа -->
+
+	</statOffsets>
+	<forcedTraits>
+      <li>
+        <def>PsychicSensitivity</def>		<!-- Психически одарена -->
+		<degree>+3</degree>
+      </li>
+	  <li>	<!-- Хрупкая -->
+        <def>Delicate</def>
+      </li>
+      <li>	<!-- Добрая -->
+        <def>Kind</def>
+      </li>
+    </forcedTraits>
+	<capMods>
+          <li>
+            <capacity>Eating</capacity>
+            <offset>1.1</offset>
+          </li>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>1.1</offset>
+          </li>
+		  <li>
+            <capacity>Hearing</capacity>
+            <offset>7.562</offset>
+          </li>
+		  <li>
+            <capacity>Talking</capacity>
+            <offset>7.4</offset>
+          </li>
+
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>3.10</offset>
+          </li>
+          <li>
+            <capacity>Moving</capacity>
+            <offset>11.78</offset>
+          </li>
+          <li>
+            <capacity>Sight</capacity>
+            <offset>3.7879</offset>
+          </li>
+          <li>
+            <capacity>BloodFiltration</capacity>
+            <offset>12.792957</offset>
+          </li>
+          <li>
+            <capacity>BloodPumping</capacity>
+            <offset>3.15</offset>
+          </li>
+           <li>
+            <capacity>Metabolism</capacity>
+            <offset>2.20</offset>
+          </li>
+          <li>
+            <capacity>Breathing</capacity>
+            <offset>0.10</offset>
+          </li>
+	</capMods>
+
+	 <hairTagFilter>
+      <whitelist>true</whitelist>
+      <tags>
+		<li>HairShort</li>
+		<li>HairLong</li>
+      </tags>
+    </hairTagFilter>
+	<beardTagFilter>
+      <whitelist>true</whitelist>
+      <tags>
+        <li>NoBeard</li>
+      </tags>
+    </beardTagFilter>
+
+    <biostatMet>8</biostatMet>
+    <symbolPack>
+      <prefixSymbols>
+        <li><symbol>Queen</symbol></li>
+      </prefixSymbols>
+    </symbolPack>
+  </GeneDef>
+
+  <GeneDef Name="VinnyGenStrong" ParentName="VinnyGen">
+	<defName>VinnyGenStrong</defName>
+    <label>Vinny gen strong</label>
+    <labelShortAdj>Strong</labelShortAdj>
+    <description>Carriers of this gene are strong.</description>
+    <displayOrderInCategory>1</displayOrderInCategory>
+
+    <biologicalAgeTickFactorFromAgeCurve>		<!-- Быстрое взросление -->  
+      <points>
+		<li>(0, 8.0)</li>
+		<li>(3, 2.0)</li>
+        <li>(7, 1.0)</li>
+        <li>(18.5, 0)</li>
+      </points>
+    </biologicalAgeTickFactorFromAgeCurve>
+
+	<painFactor>0.05</painFactor>
+	<socialFightChanceFactor>0</socialFightChanceFactor>
+	<lovinMTBFactor>1.0</lovinMTBFactor>		<!-- Половое влечение - нормальное -->  
+
+	<missingGeneRomanceChanceFactor>1.0</missingGeneRomanceChanceFactor>			<!-- Шанс успешных романтических отношений -->
+	<prisonBreakMTBFactor>+1</prisonBreakMTBFactor>			<!-- Шанс вылезти из тюрьмы -->
+
+	<statOffsets>
+	  <ComfyTemperatureMin>-120</ComfyTemperatureMin>
+	  <ComfyTemperatureMax>+80</ComfyTemperatureMax>
+
+	  <MoveSpeed>+0.0</MoveSpeed>
+
+	  <PawnBeauty>+1</PawnBeauty>
+
+	  <GlobalLearningFactor>-0.62</GlobalLearningFactor>		<!-- Не очень хорошо учится -->
+
+	  <ToxicResistance>1</ToxicResistance>
+	  <ToxicEnvironmentResistance>1</ToxicEnvironmentResistance>
+
+	  <RestFallRateFactor>0.2439</RestFallRateFactor>			<!-- Быстро спит -->
+		
+	  <IncomingDamageFactor>0.25</IncomingDamageFactor>		<!-- Стойкий к урону (очень стойкий; в игре прописано 0.75, а не 0.25) -->
+
+	  <MeleeDamageFactor>8.7</MeleeDamageFactor>			<!-- Наносит отличный урон в ближнем бою -->
+
+	  <InjuryHealingFactor>7</InjuryHealingFactor>			<!-- Быстрое заживление ран -->
+	  <ImmunityGainSpeed>8</ImmunityGainSpeed>			<!-- Просто очень сильный иммунитет -->
+
+	  <Flammability>0.01</Flammability>
+	  <RawNutritionFactor>3.8</RawNutritionFactor>		<!-- Хорошо ест сырую еду - 1.8 - обычный ген хорошей усвояемости -->
+
+	  <StaggerDurationFactor>0</StaggerDurationFactor>		<!-- Получение урона не замедляет персонажа -->
+
+	</statOffsets>
+	<forcedTraits>
+      <li>
+        <def>PsychicSensitivity</def>
+		<degree>-2</degree>
+      </li>
+      <li>	<!-- Добрый -->
+        <def>Kind</def>
+      </li>
+    </forcedTraits>
+	<capMods>
+          <li>
+            <capacity>Eating</capacity>
+            <offset>1.87</offset>
+          </li>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>12.1</offset>
+          </li>
+		  <li>
+            <capacity>Hearing</capacity>
+            <offset>3.562</offset>
+          </li>
+		  <li>
+            <capacity>Talking</capacity>
+            <offset>-0.21</offset>
+          </li>
+
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>2.10</offset>
+          </li>
+          <li>
+            <capacity>Moving</capacity>
+            <offset>5.00</offset>
+          </li>
+          <li>
+            <capacity>Sight</capacity>
+            <offset>8.19598</offset>
+          </li>
+          <li>
+            <capacity>BloodFiltration</capacity>
+            <offset>12.792957</offset>
+          </li>
+          <li>
+            <capacity>BloodPumping</capacity>
+            <offset>3.15</offset>
+          </li>
+           <li>
+            <capacity>Metabolism</capacity>
+            <offset>2.20</offset>
+          </li>
+          <li>
+            <capacity>Breathing</capacity>
+            <offset>0.978</offset>
+          </li>
+	</capMods>
+
+	 <hairTagFilter>
+      <whitelist>true</whitelist>
+      <tags>
+		<li>Bald</li>
+		<li>HairShort</li>
+      </tags>
+    </hairTagFilter>
+	<beardTagFilter>
+      <whitelist>true</whitelist>
+      <tags>
+        <li>NoBeard</li>
+      </tags>
+    </beardTagFilter>
+
+    <biostatMet>8</biostatMet>
+    <symbolPack>
+      <prefixSymbols>
+        <li><symbol>Strong</symbol></li>
+      </prefixSymbols>
+    </symbolPack>
+  </GeneDef>
+
+  <GeneDef Name="VinnyGenWeak" ParentName="VinnyGen">
+	<defName>VinnyGenWeak</defName>
+    <label>Vinny gen weak</label>
+    <labelShortAdj>Weak</labelShortAdj>
+    <description>Carriers of this gene are weak.</description>
+    <displayOrderInCategory>2</displayOrderInCategory>
+
+    <biologicalAgeTickFactorFromAgeCurve>		<!-- Медленное взросление -->  
+      <points>
+		<li>(0, 8.0)</li>
+		<li>(3, 1.0)</li>
+        <li>(7, 0.8)</li>
+		<li>(15, 0.5)</li>
+        <li>(18.5, 0)</li>
+      </points>
+    </biologicalAgeTickFactorFromAgeCurve>
+
+	<painFactor>1.97</painFactor>
+	<socialFightChanceFactor>1.3</socialFightChanceFactor>
+	<lovinMTBFactor>0.17</lovinMTBFactor>		<!-- Половое влечение - очень хочет -->  
+
+	<missingGeneRomanceChanceFactor>0.7</missingGeneRomanceChanceFactor>			<!-- Шанс успешных романтических отношений -->
+	<prisonBreakMTBFactor>+1</prisonBreakMTBFactor>			<!-- Шанс вылезти из тюрьмы -->
+
+    <conditionalStatAffecters>
+		  <li Class="ConditionalStatAffecter_Clothed">
+			<statOffsets>
+			<Fertility>0.16</Fertility>			<!-- В одежде - плохо беременеет -->
+			</statOffsets>
+		  </li>
+		  <li Class="ConditionalStatAffecter_Unclothed">			<!-- Когда раздетая - гораздо красивее -->
+			<statOffsets>
+			  <PawnBeauty>+3</PawnBeauty>
+			  <Fertility>1</Fertility>
+			  <MoveSpeed>-0.987</MoveSpeed>
+			</statOffsets>
+		  </li>
+    </conditionalStatAffecters>
+
+	<statOffsets>
+	  <ComfyTemperatureMin>-80</ComfyTemperatureMin>
+	  <ComfyTemperatureMax>+80</ComfyTemperatureMax>
+
+	  <MoveSpeed>+0.0</MoveSpeed>
+
+	  <PawnBeauty>+3</PawnBeauty>
+
+	  <GlobalLearningFactor>4.7</GlobalLearningFactor>
+
+	  <ToxicResistance>1</ToxicResistance>
+	  <ToxicEnvironmentResistance>1</ToxicEnvironmentResistance>
+
+	  <RestFallRateFactor>0.2439</RestFallRateFactor>			<!-- Быстро спит -->
+
+	  <IncomingDamageFactor>1.97</IncomingDamageFactor>
+
+	  <MeleeDamageFactor>1.7</MeleeDamageFactor>			<!-- Наносит отличный урон в ближнем бою -->
+
+	  <InjuryHealingFactor>1</InjuryHealingFactor>			<!-- Быстрое заживление ран -->
+	  <ImmunityGainSpeed>2</ImmunityGainSpeed>			<!-- Просто очень сильный иммунитет -->
+
+	  <Flammability>0.01</Flammability>
+	  <RawNutritionFactor>1.7</RawNutritionFactor>		<!-- Хорошо ест сырую еду - 1.8 - обычный ген хорошей усвояемости -->
+
+	  <StaggerDurationFactor>12.0</StaggerDurationFactor>		<!-- Получение урона сильно замедляет персонажа -->
+
+	</statOffsets>
+	<forcedTraits>
+      <li>
+        <def>PsychicSensitivity</def>
+		<degree>+3</degree>
+      </li>
+    </forcedTraits>
+	<capMods>
+          <li>
+            <capacity>Eating</capacity>
+            <offset>0.0</offset>
+          </li>
+          <li>
+            <capacity>Manipulation</capacity>
+            <offset>12.1</offset>
+          </li>
+		  <li>
+            <capacity>Hearing</capacity>
+            <offset>3.562</offset>
+          </li>
+		  <li>
+            <capacity>Talking</capacity>
+            <offset>-0.49</offset>
+          </li>
+
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>3.10</offset>
+          </li>
+          <li>
+            <capacity>Moving</capacity>
+            <offset>0.00</offset>
+          </li>
+          <li>
+            <capacity>Sight</capacity>
+            <offset>8.19598</offset>
+          </li>
+          <li>
+            <capacity>BloodFiltration</capacity>
+            <offset>1.792957</offset>
+          </li>
+          <li>
+            <capacity>BloodPumping</capacity>
+            <offset>1.15</offset>
+          </li>
+           <li>
+            <capacity>Metabolism</capacity>
+            <offset>2.20</offset>
+          </li>
+          <li>
+            <capacity>Breathing</capacity>
+            <offset>0.10</offset>
+          </li>
+	</capMods>
+
+	 <hairTagFilter>
+      <whitelist>true</whitelist>
+      <tags>
+		<li>Bald</li>
+		<li>HairShort</li>
+      </tags>
+    </hairTagFilter>
+	<beardTagFilter>
+      <whitelist>true</whitelist>
+      <tags>
+        <li>NoBeard</li>
+      </tags>
+    </beardTagFilter>
+
+    <biostatMet>8</biostatMet>
+    <symbolPack>
+      <prefixSymbols>
+        <li><symbol>Weak</symbol></li>
+      </prefixSymbols>
+    </symbolPack>
+  </GeneDef>
+	
+</Defs>

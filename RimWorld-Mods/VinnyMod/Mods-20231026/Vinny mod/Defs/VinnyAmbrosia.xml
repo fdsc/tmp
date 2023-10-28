@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <JoyKindDef>
+    <defName>VinnyAmbrosia</defName>
+    <label>VinnyAmbrosia</label>
+  </JoyKindDef>
+  
+  <JobDef>
+    <defName>JoyVinnyAmbrosia</defName>
+    <driverClass>JoyGiver_TakeDrug</driverClass>
+    <reportString>JoyVinnyAmbrosia</reportString>
+    <joyDuration>4000</joyDuration>
+    <joyMaxParticipants>1</joyMaxParticipants>
+    <joySkill>Artistic</joySkill>
+    <joyXpPerTick>0.0015</joyXpPerTick>
+    <joyKind>VinnyAmbrosia</joyKind>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+
+  <ThingDef ParentName="DrugBase">
+    <defName>VinnyAmbrosia</defName>
+    <label>ambrosia by vinny</label>
+    <description>VinnyAmbrosia is a high nutrition drug fruit</description>
+    <descriptionHyperlinks>
+      <HediffDef>VinnyAmbrosiaHigh</HediffDef>
+      <HediffDef>VinnyAmbrosiaTolerance</HediffDef>
+      <HediffDef>VinnyAmbrosiaAddiction</HediffDef>
+    </descriptionHyperlinks>
+    <tradeability>Sellable</tradeability>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <tickerType>Rare</tickerType>
+    <graphicData>
+      <texPath>Things/Item/Drug/Ambrosia</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases>
+      <MarketValue>150</MarketValue>
+      <Mass>0.1</Mass>
+      <DeteriorationRate>400</DeteriorationRate>
+      <Nutrition>2.0</Nutrition>
+    </statBases>
+    <techLevel>Spacer</techLevel>
+    <ingestible>
+      <baseIngestTicks>80</baseIngestTicks>
+      <chairSearchRadius>4</chairSearchRadius>
+      <preferability>DesperateOnly</preferability>
+      <tasteThought></tasteThought>
+      <foodType>VegetableOrFruit</foodType>
+      <!-- joyKind>HighCulture</joyKind -->
+      <joyKind>VinnyAmbrosia</joyKind>
+      <joy>0.5</joy> <!-- Уровень доставляемых развлечений -->
+      <nurseable>true</nurseable>
+      <drugCategory>Social</drugCategory>
+      <canAutoSelectAsFoodForCaravan>false</canAutoSelectAsFoodForCaravan>
+      <outcomeDoers>
+        <li Class="IngestionOutcomeDoer_GiveHediff">
+          <hediffDef>VinnyAmbrosiaHigh</hediffDef>
+          <severity>4.7</severity> <!-- Сила действия препарата -->
+          <toleranceChemical>VinnyAmbrosia</toleranceChemical>
+        </li>
+        <li Class="IngestionOutcomeDoer_GiveHediff">
+          <hediffDef>VinnyAmbrosiaTolerance</hediffDef>
+          <severity>0.0032</severity> <!-- Прирост толерантности от одной дозы -->
+          <divideByBodySize>true</divideByBodySize>
+          <multiplyByGeneToleranceFactors>true</multiplyByGeneToleranceFactors>
+        </li>
+      </outcomeDoers>
+    </ingestible>
+    <comps>
+      <li Class="CompProperties_Rottable">
+        <daysToRotStart>30</daysToRotStart>
+        <rotDestroys>true</rotDestroys>
+      </li>
+      <li Class="CompProperties_Drug">
+        <chemical>VinnyAmbrosia</chemical>
+        <addictiveness>0.010</addictiveness> <!-- Шанс формирования зависимости -->
+        <minToleranceToAddict>1.5</minToleranceToAddict> <!-- Минимальный уровень толерантности для формирования зависимости -->
+        <existingAddictionSeverityOffset>0.1</existingAddictionSeverityOffset> <!-- ??? Возможно, усиление зависимости от одной дозы -->
+        <needLevelOffset>0.9</needLevelOffset> <!-- ??? Величина снижения эффекта при возникновении зависимости -->
+        <listOrder>30</listOrder>
+      </li>
+    </comps>
+    <allowedArchonexusCount>20</allowedArchonexusCount>
+  </ThingDef>
+
+  <HediffDef>
+    <defName>VinnyAmbrosiaHigh</defName>
+    <label>vinny ambrosia warmth</label>
+    <description>Ambrosia by vinny chemicals in the bloodstream. It lifts the mood.</description>
+    <hediffClass>Hediff_High</hediffClass>
+    <defaultLabelColor>(1,0,0.5)</defaultLabelColor>
+    <scenarioCanAdd>true</scenarioCanAdd>
+    <maxSeverity>68.78</maxSeverity>
+    <isBad>false</isBad>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-2.0</severityPerDay> <!-- Ослабевание действия; 2.0 - действует половину дня при силе 1.0 -->
+        <showHoursToRecover>true</showHoursToRecover>
+      </li>
+    </comps>
+    <stages>
+      <li/>
+    </stages>
+  </HediffDef>
+
+  <ThoughtDef>
+    <defName>VinnyAmbrosiaHigh</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>VinnyAmbrosiaHigh</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <label>ambrosia warmth</label>
+        <description>That ambrosia makes me feel more relaxed, and gives me energy at the same time.</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- Ambrosia addiction -->
+  
+  <ChemicalDef>
+    <defName>VinnyAmbrosia</defName>
+    <label>VinnyAmbrosia</label>
+    <addictionHediff>VinnyAmbrosiaAddiction</addictionHediff>
+    <toleranceHediff>VinnyAmbrosiaTolerance</toleranceHediff>
+    <onGeneratedAddictedToleranceChance>0.001</onGeneratedAddictedToleranceChance>
+    <generateAddictionGenes>true</generateAddictionGenes>
+  </ChemicalDef>
+  
+  <NeedDef ParentName="DrugAddictionNeedBase">
+    <defName>VinnyChemical_Ambrosia</defName>
+    <needClass>Need_Chemical</needClass>
+    <label>vinny-ambrosia</label>
+    <description>Because of an vinny-ambrosia addiction, this person needs to regularly consume ambrosia to avoid withdrawal symptoms.</description>
+    <listPriority>20</listPriority>
+  </NeedDef>
+
+  <HediffDef ParentName="DrugToleranceBase">
+    <defName>VinnyAmbrosiaTolerance</defName>
+    <label>vinny-ambrosia tolerance</label>
+    <description>A built-up tolerance to vinny-ambrosia. The more severe this tolerance is, the more ambrosia it takes to get the same effect.</description>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-0.20</severityPerDay> <!-- Снижение значения толерантности каждый день; -0,2 - 20% снижения -->
+      </li>
+      <li Class="HediffCompProperties_DrugEffectFactor">
+        <chemical>VinnyAmbrosia</chemical>
+      </li>
+    </comps>
+  </HediffDef>
+  
+  <HediffDef ParentName="AddictionBase">
+    <defName>VinnyAmbrosiaAddiction</defName>
+    <label>vinny ambrosia addiction</label>
+    <description>A chemical addiction to vinny-ambrosia. Long-term presence of ambrosia has caused neurological adaptations at the cellular level, so the brain can no longer function properly without the drug.
+\nWithout regular doses of ambrosia, withdrawal symptoms will begin. However, extended abstinence will force the brain to adapt back to its normal state, resolving the addiction.</description>
+    <hediffClass>Hediff_Addiction</hediffClass>
+    <causesNeed>Chemical_Ambrosia</causesNeed>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-0.033</severityPerDay> <!-- ??? Похоже на ослабевание зависимости -->
+        <showDaysToRecover>true</showDaysToRecover>
+      </li>
+    </comps>
+    <stages>
+      <li>
+      </li>
+      <li>
+        <label>withdrawal</label>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <ThoughtDef>
+    <defName>VinnyAmbrosiaWithdrawal</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>VinnyAmbrosiaAddiction</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <developmentalStageFilter>Baby, Child, Adult</developmentalStageFilter>
+    <stages>
+      <li>
+        <visible>false</visible>
+      </li>
+      <li>
+        <label>vinny ambrosia withdrawal</label>
+        <description>I feel heavy and cold all the time. I never thought I'd want a piece of fruit so much.</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>
