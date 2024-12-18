@@ -2,6 +2,7 @@
 # v^2/2gu=s
 # км/ч v^2/254=s
 
+# apt install python3-matplotlib
 import matplotlib.pyplot as plt
 
 # v в километрах в час, u - безразмерный коэффициент трения
