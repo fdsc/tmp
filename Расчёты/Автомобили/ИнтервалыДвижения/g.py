@@ -60,7 +60,7 @@ def doPlot(us, maxv, maxs, minT = 2, carSize = 4.2, truckSize = 24.0):
     
     colorBase0 = (0, 1, 0)
     colorBase1 = (0, 0, 1)
-    
+
     for i,u in enumerate(us):
         [V, M, S, N] = getaMS(0, maxv, 1, u, minT[0], carSize)
         line, = plt.plot(V, M, label=f"$\\mu={u}$ легковые", color=getColorForI(colorBase0, len(us), i))
