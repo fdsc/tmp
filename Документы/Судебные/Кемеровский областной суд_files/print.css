@@ -1,0 +1,66 @@
+/*
+body{
+background-color:#fff;
+}
+.footer,.header{
+display:none;
+}
+*/
+
+body {
+	background-color: #fff !important;
+}
+
+.footer, .header, .row {
+	display: none !important;
+}
+
+@media print {
+	@page {
+		margin: 2cm 0 !important;
+		size: auto;
+	}
+
+	body {
+		width: 100%;
+	}
+
+	/*
+	модуль госпошлина печатная форма
+	.box__head_white,.menuArea{
+	display:none;
+	}
+	.gosposh{
+	 padding: 0 0 0 0;
+	 margin: 0 0 0 0;
+	 background-color: white;
+	 border-color: white;
+	}
+	div#Gosvibor, div#Gost, div#Goster, div#box,.printkvitan{
+	 display: none;
+	 padding: 0 0 0 0;
+	 margin: 0 0 0 0;
+	}
+	*/
+	/*модуль госпошлина печатная форма*/
+	.box__head_white, .menuArea, .menu {
+		display: none !important;
+	}
+
+	.divramka {
+		display: block !important;
+	}
+
+	.gosposh, .box_common.m-all_m, .ramka {
+		padding: 0 0 0 0 !important;
+		margin: 0 0 0 0 !important;
+		background-color: white !important;
+		border-color: white !important;
+	}
+
+	div#Gosvibor, div#Gost, div#Goster, div#box, #info_nalog, .printkvitan {
+		display: none !important;
+		padding: 0 0 0 0 !important;
+		margin: 0 0 0 0 !important;
+	}
+}

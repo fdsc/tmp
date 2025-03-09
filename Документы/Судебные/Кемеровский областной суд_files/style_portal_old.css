@@ -1,0 +1,226 @@
+#modSdpContent {
+	overflow: auto;
+	font-size: 0.8em;
+}
+
+#modSdpContent form {
+	margin: 0px;
+	padding: 0.91em;
+	background: #fff;
+
+}
+
+#modSdpContent {
+	margin: 0px;
+	padding: 0.91em;
+	background: #fff;
+
+}
+
+#modSdpContent a {
+	color: #069;
+}
+
+#modSdpContent #menu {
+	font-size: 1.181px;
+	font-weight: bold;
+	color: #555;
+	padding-left: 1%;
+	padding-right: 1%;
+}
+
+#modSdpContent #line {
+	border-bottom: 1px solid #cecece;
+	margin-bottom: 0.45em;
+	margin-top: 0.45em;
+}
+
+#modSdpContent table, #modSdpContent td, #modSdpContent tr {
+	margin: 0px;
+	border: 0px;
+	color: #555;
+}
+
+#modSdpContent table#top_menu {
+	font-weight: bold;
+}
+
+#modSdpContent table#top_menu td#calendar {
+	padding: 0px 0.45em;
+}
+
+td#calendar img {
+	vertical-align: bottom;
+}
+
+#modSdpContent input.text {
+	border: 1px solid #4a739d;
+	padding: 1px;
+}
+
+#modSdpContent .title {
+	font-size: 1.5em;
+	color: #069;
+	left: 1.63em;
+	top: 0.36em;
+}
+
+#modSdpContent .casenumber {
+	font-size: 1.16em;
+	font-weight: bold;
+	padding-top: 0.91em
+}
+
+#modSdpContent table input.Lookup {
+	border: 1px solid #4a739d;
+}
+
+#modSdpContent #error {
+	font-size: 1.16em;
+	padding-top: 50px;
+	color: #900;
+	font-weight: bold;
+	padding-bottom: 0.91em
+}
+
+#modSdpContent #tablcont TH {
+	background: #ddd;
+	padding-left: 0.181em;
+	font-weight: bold;
+	border-left: 1px solid #bbb;
+	border-top: 1px solid #bbb;
+}
+
+#modSdpContent #tablcont TD {
+	padding-left: 0.181em;
+	border-left: 1px solid #bbb;
+	border-top: 1px solid #bbb;
+	border-right: 1px solid #bbb;
+}
+
+#modSdpContent #tablcont {
+	border-right: 1px solid #bbb;
+	border-bottom: 1px solid #bbb;
+}
+
+#modSdpContent #tablcont h2 {
+	color: #2a5d87;
+	font-weight: bold;
+	margin: 0.2em;
+	font-size: 2em;
+	font-family: inherit;
+}
+
+#modSdpContent .search_field {
+	color: #555;
+	float: left;
+}
+
+#modSdpContent .booton {
+	font-weight: bold;
+	color: #6593b9;
+	background-color: #d7ecff;
+	border: 1px solid #6593b9;
+	height: 2.09em;
+}
+
+#modSdpContent #container {
+	width: 97%;
+	margin: 0 auto;
+}
+
+#modSdpContent #contentt {
+	background-color: #fafafa;
+	border: 1px solid #818181;
+}
+
+#modSdpContent #contentt #tablcont {
+	border: 1px solid #bbb;
+}
+
+#modSdpContent #contentt #tablcont TD {
+	padding-left: 0.181em;
+	border: 1px solid #bbb;
+}
+
+#modSdpContent #contentt #tablcont TH {
+	background: #ddd;
+	padding-left: 0.181em;
+	font-weight: bold;
+}
+
+#modSdpContent #contentt A {
+	font: 1.181px/1.3 'Times New Roman', Times, serif;
+	color: #005aa4;
+	text-decoration: underline !important;
+}
+
+#modSdpContent #contentt A:hover {
+	color: #005aa4;
+	text-decoration: none !important;
+}
+
+#modSdpContent ul#tabs {
+	position: relative;
+	top: 1px;
+	font-size: 1.2em;
+	list-style-type: none;
+	padding-bottom: 0;
+	border-bottom: none;
+	margin-bottom: 0px;
+	z-index: 2;
+	margin-left: 0px;
+	padding-left: 0px;
+	height: 3.173em;
+}
+
+#modSdpContent * + html ul#tabs {
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+#modSdpContent #tabs li {
+	float: left;
+	margin: 0.181em 0px 0px 0px;
+}
+
+#modSdpContent #tabs li a {
+	display: block;
+	color: #005aa4;
+	text-decoration: none;
+	padding: 0.45em;
+}
+
+#modSdpContent #tabs li.nonsel {
+	background-color: #efefef;
+	border: 1px solid;
+	border-color: #99c #99c #818181 #99c;
+	margin-top: 0.727em;
+	margin-right: -1px;
+}
+
+#modSdpContent #tabs li.nonsel a:hover {
+	background-color: #b5bed6;
+}
+
+#modSdpContent #tabs li.sel {
+	background-color: #fafafa;
+	border: 1px solid;
+	border-color: #818181;
+	border-bottom: none;
+	font-weight: bold;
+	padding-top: 0.6em;
+}
+
+#modSdpContent #H_date, .date {
+	padding: 0.3em;
+	width: 5.2em;
+}
+
+#modSdpContent td {
+	padding: 0.36em;
+}
+
+#modSdpContent #top_menu td {
+	padding: 0;
+}
