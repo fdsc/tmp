@@ -1,0 +1,14 @@
+body
+{
+    white-space: pre-wrap;
+}
+
+td.c
+{
+    text-align: center;
+}
+
+.b,strong
+{
+    font-weight: bold;
+}
