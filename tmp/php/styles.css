@@ -3,12 +3,33 @@ body
     white-space: pre-wrap;
 }
 
+table
+{
+    border-collapse: collapse;
+}
+
 td.c
 {
     text-align: center;
 }
 
+td.size
+{
+    text-align:    center;
+    padding-right: 0.5em;
+}
+
 .b,strong
 {
     font-weight: bold;
+}
+
+tr.lg1
+{
+    background-color: #FFFFF8;
+}
+
+tr.lg2
+{
+    background-color: #FAFACC;
 }

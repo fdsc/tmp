@@ -81,7 +81,8 @@ function resize($originalImagePath, $maxW, $maxH)
     if ($k <= 1.0)
     {
         imagedestroy($originalImage);
-        exit("</table>Изображение слишком маленькое для уменьшения до размера $maxW x $maxH<br>");
+        echo "</table><strong>Изображение слишком маленькое для уменьшения до размера $maxW x $maxH</strong><br><br><br>";
+        return;
     }
 
     // Желаемая ширина и высота нового изображения
@@ -91,7 +92,7 @@ function resize($originalImagePath, $maxW, $maxH)
     // Вычисляем путь к новому файлу
     $resizedImagePath  = substr($originalImagePath, 0, strlen($originalImagePath) - 4);
     $resizedImagePath .= "-" . max($newWidth, $newHeight);
-    $resizedImagePath .= ".png";
+    $resizedImagePath .= ".r.png";
     if (!file_exists($resizedImagePath))
     {
         // Создание нового холста с заданными размерами
@@ -133,11 +134,11 @@ $maxHp = $_GET['maxhp'];
 
 if (!isset($_GET['maxw']))
 {
-    $maxW = 1280;
+    $maxW = 1200;
 }
 if (!isset($_GET['maxh']))
 {
-    $maxH = 1600;
+    $maxH = 1200;
 }
 
 

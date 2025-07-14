@@ -125,6 +125,7 @@ function ListDir($curDir)
     }
 
     $containsFiles = false;
+    $colorNumber   = 0;
     foreach ($files as $file)
     {
         if ($file == "." or $file == "..")
@@ -138,23 +139,45 @@ function ListDir($curDir)
         if (is_file($file_full))
         if (str_ends_with($file, '.png'))
         {
-            if (str_ends_with($file, '-1600.png'))
-                continue;
-            if (str_ends_with($file, '-600.png'))
-                continue;
-            if (str_ends_with($file, '-400.png'))
+            if (str_ends_with($file, '.r.png'))
                 continue;
 
+            $sizes = [2000, 1600, 1200, 800, 400, 200];
+            $thlen = count($sizes)+1;
             if (!$containsFiles)
             {
                 $containsFiles = true;
-                echo "<br><hr>Файлы:<br>";
+                echo "<br><hr>";
+                echo "<table>";
+                echo "<tr><th>Файлы</th><th colspan=\"$thlen\">Размеры</th></tr>";
             }
 
+            $color = "lg1";
+            if ($colorNumber == 1)
+            {
+                $color = "lg2";
+                $colorNumber = 0;
+            }
+            else
+            {
+                $colorNumber = 1;
+            }
+            
             $file      = htmlspecialchars($file);
             $file_full = lightUrlEncode($file_full);
-            echo "<a target=_blank href='https://chugunka10.net/img/resize-png.php?path=$file_full'>$file</a><br>";
+            echo "<tr class=$color>";
+            echo "<td><a target=_blank href='https://chugunka10.net/img/resize-png.php?path=$file_full'>$file</a></td>";
+            echo "<td>    </td>";
+            foreach ($sizes as $size)
+            {
+                echo "<td class=size><a target=_blank href='https://chugunka10.net/img/resize-png.php?maxh=$size&maxw=$size&path=$file_full'>$size</a></td>";
+            }
+            echo "</tr>";
         }
+    }
+    if ($containsFiles)
+    {
+        echo "</table>";
     }
     
     if (!$containsDir and !$containsFiles)
